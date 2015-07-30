@@ -1,4 +1,4 @@
-angular.module('Gunt.factories', [])
+angular.module('Mess.factories', [])
 
 .factory('$localstorage', ['$window', function($window) {
     return {
@@ -32,47 +32,5 @@ angular.module('Gunt.factories', [])
     }
 })
 
-.factory('level', function($http, appConfig, $injector) {
-    return {
-        checkanswer: function(check) {
-            return $http({
-                method: 'POST',
-                url: appConfig.serverUrl + 'checkanswer',
-                data: check,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-        },
-        currentLevel: function(id) {
-            return $http({
-                method: 'POST',
-                url: appConfig.serverUrl + 'register',
-                data: {id: id},
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-        },
-        levelState: function(level) {
-            return appConfig.levelname[level];
-        },
-        gotoLevel: function(id) {
-            tempLevel=$injector.get('level');
-            $state=$injector.get('$state');
-            tempLevel.currentLevel(id)
-            .success(function(data){
-                if (data.code==0){
-                    var togoto = tempLevel.levelState(data.message.level);
-                    console.log(togoto);
-                    $state.go(togoto);
-                    // $state.go('app.start');
-                }
-            }).error(function(err){
-                console.log(err);
-            });
-        }
-    }
-})
 
 ;

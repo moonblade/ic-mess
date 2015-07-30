@@ -1,15 +1,11 @@
-// Ionic Gunt App
+// Ionic Mess App
 // angular.module is a global place for creating, registering and retrieving Angular modules
-// 'Gunt' is the name of this angular module example (also set in a <body> attribute in index.html)
+// 'Mess' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-// 'Gunt.controllers' is found in controllers.js
-angular.module('Gunt', ['ionic', 'Gunt.controllers', 'ngOpenFB', 'Gunt.factories', 'Gunt.alpha'])
+// 'Mess.controllers' is found in controllers.js
+angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
 
-.run(function($ionicPlatform, ngFB) {
-    $ionicPlatform.ready(function() {
-        ngFB.init({
-            appId: '1573565049528271'
-        });
+.run(function($ionicPlatform) {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
         if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -19,24 +15,10 @@ angular.module('Gunt', ['ionic', 'Gunt.controllers', 'ngOpenFB', 'Gunt.factories
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
-    });
-})
+    })
 
 .value('appConfig', {
     serverUrl: 'http://localhost:3000/',
-    levelname: {
-        0: 'app.start',
-        1: 'app.copperKey',
-        2: 'app.firstGate',
-        3: 'app.jadeKey',
-        4: 'app.secondGate',
-        5: 'app.crystalKey',
-        6: 'app.crystalKeySplit',
-        7: 'app.crystalKeySplit',
-        8: 'app.crystalKeySplit',
-        9: 'app.thirdGate',
-        10: 'app.bonusRoom'
-    }
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
@@ -80,21 +62,6 @@ angular.module('Gunt', ['ionic', 'Gunt.controllers', 'ngOpenFB', 'Gunt.factories
             }
         }
     })
-
-    .state('app.start', {
-        url: '/start',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/start.html',
-                controller: 'startCtrl'
-            },
-            'fabContent': {
-                template: '',
-                controller: ''
-            }
-        }
-    });
-
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
 });

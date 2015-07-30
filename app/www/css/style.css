@@ -1,0 +1,228 @@
+/* General
+==================================*/
+h1 {
+    color: #fff;
+    text-shadow: 0 1px 0px #000;
+    font-size: 42px;
+}
+
+.wrapper{
+    margin:0px auto;
+    text-align:center;
+    background:#ccc;
+    border:1px solid #ddd;
+    padding:25px;
+    width:414px;
+}
+
+.vertical_center{
+    margin-top: 50% !important;
+}
+
+.horizontal_center{
+  text-align: center!important;
+}
+/*Tic Tac Toe
+==================================*/
+body {
+  font-family: "Coming Soon", cursive;
+  background-color: #e8dbb6;
+}
+
+aside.leftmargin {
+  width: 165px;
+  border-right: 2px solid #ff3388;
+  height: 1122px;
+  top: 0; left: 0;
+  z-index: 2;
+  overflow-x: hidden;
+}
+
+div.holes {
+  background-image: radial-gradient(#e8dbb6 12px, transparent 15px);
+  background-size: 450px 450px;
+  background-position: 0 0;
+  width: 450px;
+  height: 1150px;
+  margin-left: -170px;
+  margin-top: -110px;
+}
+
+header.topmargin {
+  background-color: #fff;
+  padding-left: 165px;
+  height: 110px;
+  position: relative;
+
+}
+
+h1.margin-title {
+  top: 50px;
+  font-size: 50px;
+  padding-left: 15px;
+  font-family: 'UnifrakturCook'; 
+}
+
+h2.stamp {
+  top: 85px;
+  right: 320px;
+  color: red;
+  font-family: 'Black Ops One';
+}
+
+.main {
+  margin-left: 165px;
+  min-height: 500px;
+  padding: 15px 30px 0 15px;
+}
+
+footer.bottommargin {
+  width: 100%;
+  background-color: white;
+  bottom: 1px;
+  height: 32px;
+}
+
+.annoucement {
+  font-size: 3.5rem;
+  height: 3rem;
+  text-indent: 13rem;
+}
+
+#board {
+  width: 45rem;
+  height: 45rem;
+  margin-top: 2em;
+  margin-left: 2em;
+}
+
+.row {
+  width: 45rem;
+  height: 15rem;
+  border-bottom: .375rem solid black;
+}
+
+.space {
+  width: 15rem;
+  height: 15rem;
+  border-right: .375rem solid black;
+  position: relative;
+}
+
+.letter {
+  width: 18rem;
+  height: 18rem;
+  font-size: 9em;
+  text-align: center;
+  margin: auto; 
+  top: 0; right: 0; bottom: .09375em; /* text sits at bottom of el */
+  left: 0;
+}
+
+.last, 
+.space:nth-child(3), 
+.row:nth-child(3) {
+  border: none;
+}
+
+
+a, 
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+  color: rgb(51, 51, 51);
+  cursor: pointer;
+}
+
+/* Utilities
+==================================*/
+.title-bordered {
+    border-top: solid 2px #bbb;
+    padding-top: 30px;
+}
+
+p {
+    color: #555;
+    margin: 0 0 25px;
+}
+
+.scroll {
+    height: 100%;
+}
+
+
+/* Menu
+==================================*/
+.menu .bar.bar-header.expanded {
+    transition: all .5s ease-in-out;
+}
+
+.menu-open .bar.bar-header.expanded {
+    background-color: #222;
+}
+
+.menu h2 {
+    bottom: 0;
+    font-size: 18px;
+    left: 16px;
+    position: absolute;
+}
+
+.menu .avatar {
+    height: 88px;
+    width: 88px;
+}
+
+.menu.menu-left * {
+    font-weight: bold;
+}
+
+.menu-open .ion-navicon {
+    transform: rotate(-360deg);
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.menu-open .ion-navicon:before {
+    content: "\f2ca";
+}
+
+
+/* Login
+==================================*/
+#login {
+  background: url('../img/gunt.png') center;
+  background-size: 100% 100%;
+}
+
+.app-icon {
+    background: url('../img/login.png') center;
+    background-color: #767676;
+    background-size: cover;
+    border-radius: 50%;
+    margin: 0 auto;
+    height: 25vh;
+    width: 25vw;
+}
+
+.social-login {
+    position: fixed;
+    bottom: 0;
+}
+
+/*Start
+==================================*/
+#startAnswer {
+  width: 80%;
+  float: left;
+}
+
+.para {
+  margin-top: 10vh;
+}
+.para p {
+  font: bold 6vw "Roboto";
+  color: tomato;
+}

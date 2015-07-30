@@ -1,0 +1,14 @@
+<form name="answerForm">
+    <div class="list">
+        <div class="item">
+            <!-- answer -->
+            <label id="startAnswer" class="item-input">
+                <input required type="text" ng-model="check.answer" placeholder="{{placeholder}}">
+            </label>
+            <!-- Submit -->
+            <button ng-click="submit()" ng-disabled="answerForm.$invalid" class="button button-calm ">
+                <i class="icon ion-android-send"></i>
+            </button>
+        </div>
+    </div>
+</form>

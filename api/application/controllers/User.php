@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+require_once 'Mess.php';
 
 class User extends CI_Controller {
 
@@ -43,9 +44,8 @@ class User extends CI_Controller {
 			$result['message']="Logged In";
 		}
 		print json_encode($result);
-
-
 	}
+
 	public function changePassword()
 	{
 		$id=$this->input->get_post('id');
@@ -81,5 +81,32 @@ class User extends CI_Controller {
 		print json_encode($result);
 	}
 
-
+	public function isMD($id)
+	{
+			$array['id']=$id;
+			$query=$this->db->get_where('users',$array);
+			$temp=$query->row_array();
+			if($temp['level']>2)
+				return 1;
+			return 0;
+	}
+	public function isSec($id)
+	{
+			$array['id']=$id;
+			$mess=new Mess();
+			$array['mid']=$mess->getCurrentMid();
+			$query=$this->db->get_where('sec',$array);
+			if($query->row_array())
+				return 1;
+			return 0;
+	}
+	public function isSuperAdmin($id)
+	{
+			$array['id']=$id;
+			$query=$this->db->get_where('users',$array);
+			$temp=$query->row_array();
+			if($temp['level']>9)
+				return 1;
+			return 0;
+	}
 }

@@ -15,23 +15,33 @@ class Mess extends CI_Controller {
 
 	public function add()
 	{
+
 		$result['status']=0;
 		$result['message']="Permission Denied";
 		$user = new User();
 		$id=$this->input->get_post('id');
 		if($user->isMD($id))
 		{
+			$today=date("Y-m-d");
+			$buffer='5';
 			$row['start']=$this->input->get_post('start');
-			if($temp=$this->input->get_post('nod'))
-				$row['no_of_days']=$temp;
+			$current=$this->getCurrentMess();
+			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days'))
+				|| date($row['start'])>date('Y-m-d',strtotime($today.' +'.$buffer.' days')))
+				{
+				$result['message']="Date Error";
+			}
+			else{
+				$result['message']="Some Error Occured";
+				if($temp=$this->input->get_post('nod'))
+					$row['no_of_days']=$temp;
+				if($this->db->insert('mess', $row))
+				{
+					$result['status']=1;
+					$result['message']="Successfully Inserted";
+				}	
+			}
 
-			$result['message']="Some Error Occured";
-
-			if($this->db->insert('mess', $row))
-			{
-				$result['status']=1;
-				$result['message']="Successfully Inserted";
-			}	
 		}
 		
 		print json_encode($result);
@@ -41,7 +51,6 @@ class Mess extends CI_Controller {
 	{
 		$result['status']=0;
 		$result['message']="No Details Found";
-
 		$array['mid']=$id;
 		$query=$this->db->get_where('mess',$array);
 		$temp=$query->row_array();

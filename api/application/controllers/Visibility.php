@@ -23,7 +23,27 @@ class Visibility extends CI_Controller {
 			die(json_encode($result));
 	}
 
-
+	public function delete()
+	{
+		$flag=1;
+		$result['status']=0;
+		$result['message']="Could Not Update Completely";
+		$mess=new Mess();
+		$dates=$this->input->get_post('date[]');
+		$current=$mess->getCurrentMess();
+		$array['mid']=$current['mid'];
+		$count=0;
+		foreach ($dates as $array['date']) {
+			if($flag)
+				if(!$this->db->delete('visibility',$array))
+					$flag=0;
+		}
+		if($flag){
+			$result['status']=1;
+			$result['message']="Successfully Updated";
+		}
+		print json_encode($result);
+	}
 	public function add()
 	{
 		$flag=1;
@@ -33,17 +53,21 @@ class Visibility extends CI_Controller {
 		$dates=$this->input->get_post('date[]');
 		$current=$mess->getCurrentMess();
 		$array['mid']=$current['mid'];
+		$count=0;
 		foreach ($dates as $array['date']) {
 			if($flag){
 				if(date($array['date'])>date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days'))
 					||
-					date($array['date'])<date($current['start'])
-					){
+					date($array['date'])<date($current['start'])){
 					$result['message']="Date Out of Bounds";
 					$flag=0;
 				}
 				else if(!$this->db->insert('visibility',$array)){
 					$flag=0;
+				}
+				else
+				{
+					$count++;
 				}
 			}
 		}
@@ -52,7 +76,9 @@ class Visibility extends CI_Controller {
 			$result['message']="Successfully Edited";
 		}
 		else{
-			foreach ($dates as $array['date']) {
+			for ($i=0;$i<$count;++$i)
+			{
+				$array['date']=$dates[$i];
 				$this->db->delete('visibility',$array);
 			}
 		}

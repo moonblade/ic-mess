@@ -17,6 +17,20 @@ class User extends CI_Controller {
 	{
 		$row['name']=$this->input->get_post('name');
 		$row['email']=$this->input->get_post('email');
+		$row['pass']=$this->input->get_post('pass');
+		$row['branch']=$this->input->get_post('branch');
+		$row['address']=$this->input->get_post('address');
+		$row['dob']=$this->input->get_post('dob');
+		$row['father']=$this->input->get_post('father');
+		if($temp=$this->input->get_post('mother'))
+			$row['mother']=$temp;
+		if($temp=$this->input->get_post('phone'))
+			$row['phone']=$temp;
+		$row['phonedad']=$this->input->get_post('phonedad');
+		if($temp=$this->input->get_post('phonemom'))
+			$row['phonemom']=$temp;
+		$row['bloodgroup']=$this->input->get_post('bloodgroup');
+
 
 		$result['status']=0;
 		$result['message']="Email Already Exists";

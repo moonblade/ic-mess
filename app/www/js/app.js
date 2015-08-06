@@ -18,11 +18,11 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
     })
 
 .value('appConfig', {
-    serverUrl: 'http://localhost/working/mess/api/',
-    messUrl: 'http://localhost/working/mess/api/mess/',
-    userUrl: 'http://localhost/working/mess/api/user/',
-    visibilityUrl: 'http://localhost/working/mess/api/visibility/',
-    attendanceUrl: 'http://localhost/working/mess/api/attendance/',
+    serverUrl: 'http://icccmess-moonblade.rhcloud.com/api/',
+    messUrl: 'http://icccmess-moonblade.rhcloud.com/api/mess/',
+    userUrl: 'http://icccmess-moonblade.rhcloud.com/api/user/',
+    visibilityUrl: 'http://icccmess-moonblade.rhcloud.com/api/visibility/',
+    attendanceUrl: 'http://icccmess-moonblade.rhcloud.com/api/attendance/',
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {

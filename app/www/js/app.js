@@ -18,7 +18,11 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
     })
 
 .value('appConfig', {
-    serverUrl: 'http://localhost:3000/',
+    serverUrl: 'http://localhost/working/mess/api/',
+    messUrl: 'http://localhost/working/mess/api/mess/',
+    userUrl: 'http://localhost/working/mess/api/user/',
+    visibilityUrl: 'http://localhost/working/mess/api/visibility/',
+    attendanceUrl: 'http://localhost/working/mess/api/attendance/',
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {

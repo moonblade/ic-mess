@@ -88,32 +88,72 @@ angular.module('Mess.controllers', ['Mess.factories'])
     };
 })
 
-.controller('LoginCtrl', function($scope, $state, $timeout, $stateParams, $ionicPopup, $ionicLoading, $localstorage, login) {
-    $scope.player = $localstorage.getObject('player');
-    if ($scope.player != {}) {
-        level.gotoLevel($scope.player.id);
+.controller('LoginCtrl', function($scope, $state, $timeout, $stateParams, $ionicPopup, $ionicLoading,$ionicPopover, $localstorage, user) {
+    $scope.login = {};
+    $scope.showLogin = false;
+
+    $scope.loginPopover = $ionicPopover.fromTemplateUrl('templates/forms/loginForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.loginPopover = popover;
+    });
+
+    if ($localstorage.get('profile') != undefined)
+    {
+        // $state.go('app.calenderView');
+        console.log("calender");
     }
-    $scope.fbLogin = function() {
+
+    if ($localstorage.getObject('loginData') != undefined) {
+        $scope.login = $localstorage.getObject('loginData');
+    }
+
+    $scope.register = function() {
+        $state.go('app.register');
+    }
+
+
+    $scope.loginShow = function() {
+        $scope.loginPopover.show();
+        console.log("Show login Form");
+    }
+
+    $scope.loginSubmit = function() {
+        $scope.loginPopover.hide();
+        if ($scope.login.Remember) {
+            $localstorage.set('loginData', JSON.stringify($scope.login));
+        }
         $ionicLoading.show();
-        facebookConnectPlugin.login(['public_profile', 'email'],
-            function(response) {
-                // $localstorage.set('login_status','success');
+        var loginData = {
+            email: $scope.login.Email,
+            pass: $scope.login.Password
+        }
+        user.login(loginData)
+            .success(function(data) {
+                $ionicLoading.hide();
+                if (data.code == 1) {
+                    console.log("logging in");
+                    console.log(data.message);
+                    $localstorage.set('profile', JSON.stringify(data.message));
+                    $rootScope.loggedIn = 1;
+                    $state.go('app.searchresult');
+                } else {
+                    console.log(data.message);
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            })
+            .error(function(err) {
+                console.log(err);
                 var alertPopup = $ionicPopup.alert({
-                    title: 'login',
-                    template: JSON.stringify(response)
-                });
-                console.log(response);
-                $state.go('app.home', {}, {
-                    location: "replace",
-                    reload: true
+                    title: 'Error',
+                    template: 'Some error occured'
                 });
                 $ionicLoading.hide();
-            },
-            function(error) {
-                ionicToast.show("Some error occured! Please try again.", "middle", false, 2500);
             });
-    };
-
+    }
     ionic.material.ink.displayEffect();
 })
 

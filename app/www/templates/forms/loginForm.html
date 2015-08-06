@@ -1,0 +1,24 @@
+<form name="loginForm">
+    <div class="list card vertical_center">
+        <!-- Email Id -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">Email</span>
+            <input required type="email" ng-model="login.Email" placeholder="Email">
+        </label>
+        <!-- Password -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">Password</span>
+            <input required type="password" ng-model="login.Password" placeholder="Password">
+        </label>
+        <!-- Remember me -->
+        <div class="item item-checkbox">
+            <input type="checkbox" ng-model="login.Remember" value="on"></input>
+            Remember me
+        </div>
+        <!-- Buttons -->
+        <span class="item button-bar">
+            <!-- Login -->
+            <button ng-click="loginSubmit()" ng-disabled="loginForm.$invalid" class="button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">Login</button>
+        </span>
+    </div>
+</form>

@@ -17,15 +17,15 @@ angular.module('Mess.factories', [])
     }
 }])
 
-.factory('login', function($http, appConfig) {
+.factory('user', function($http, appConfig) {
     return {
-        login: function(player) {
+        login: function(loginData) {
             return $http({
                 method: 'POST',
-                url: appConfig.serverUrl + 'register/',
-                data: player,
+                url: appConfig.userUrl + 'login/',
+                data: loginData,
                 headers: {
-                    'Content-Type': 'application/json'
+                   'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
         }

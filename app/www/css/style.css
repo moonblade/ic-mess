@@ -203,8 +203,8 @@ p {
     background-size: cover;
     border-radius: 50%;
     margin: 0 auto;
-    height: 25vh;
-    width: 25vw;
+    height: 100px;
+    width: 100px;
 }
 
 .social-login {

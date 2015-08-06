@@ -163,7 +163,7 @@ class Attendance extends CI_Controller {
 		$array['date']=$this->input->get_post('date');
 		$result['status']=1;
 		if($temp=$this->enrolled())
-		{
+		{	
 			$query=$this->db->query("select count(id) as count from attendance where date='".$array['date']."'");
 			$tempRes=$query->row_array();
 			if($tempRes)

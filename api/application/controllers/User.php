@@ -13,7 +13,7 @@ class User extends CI_Controller {
 		print "User Functions Php";
 	}
 
-	public function add()
+	public function register()
 	{
 		$row=$_REQUEST;
 		if($row['pass'])
@@ -37,7 +37,8 @@ class User extends CI_Controller {
 		$row['pass']=md5($this->input->get_post('pass'));
 		
 		$result['status']=0;
-		$result['message']="Invalid Username or Password";
+		$result['message']=json_encode($row);
+		// $result['message']="Invalid Username or Password";
 		$query=$this->db->get_where('users',$row);
 		$temp=$query->row_array();
 		if($temp)

@@ -128,6 +128,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
             email: $scope.login.Email,
             pass: $scope.login.Password
         }
+        loginData  = JSON.stringify(loginData);
         user.login(loginData)
             .success(function(data) {
                 $ionicLoading.hide();

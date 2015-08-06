@@ -37,7 +37,7 @@ class User extends CI_Controller {
 		$row['pass']=md5($this->input->get_post('pass'));
 		
 		$result['status']=0;
-		$result['message']=json_encode($row);
+		$result['message']=json_encode($_REQUEST);
 		// $result['message']="Invalid Username or Password";
 		$query=$this->db->get_where('users',$row);
 		$temp=$query->row_array();

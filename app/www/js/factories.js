@@ -17,20 +17,33 @@ angular.module('Mess.factories', [])
     }
 }])
 
-.factory('user', function($http, appConfig) {
+.factory('user', function($http, appConfig, convert) {
     return {
         login: function(loginData) {
             return $http({
                 method: 'POST',
                 url: appConfig.userUrl + 'login/',
-                data: loginData,
+                data: convert.toget(loginData),
                 headers: {
-                   'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
         }
     }
 })
 
+.factory('convert', function() {
+    return {
+        toget: function(data) {
+            var string_ = JSON.stringify(data);
+            string_ = string_.replace(/{/g, "");
+            string_ = string_.replace(/}/g, "");
+            string_ = string_.replace(/:/g, "=")
+            string_ = string_.replace(/,/g, "&");
+            string_ = string_.replace(/"/g, "");
+            return string_;
+        }
+    }
+})
 
 ;

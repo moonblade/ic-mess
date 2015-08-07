@@ -41,6 +41,7 @@ angular.module('Mess.factories', [])
             string_ = string_.replace(/:/g, "=")
             string_ = string_.replace(/,/g, "&");
             string_ = string_.replace(/"/g, "");
+            string_ = string_.replace(/\\/g, "");
             return string_;
         }
     }

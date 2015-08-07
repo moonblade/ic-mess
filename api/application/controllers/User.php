@@ -43,7 +43,7 @@ class User extends CI_Controller {
 		if($temp)
 		{
 			$result['status']=1;
-			$result['message']="Logged In";
+			$result['message']=$temp;
 		}
 		print json_encode($result);
 	}

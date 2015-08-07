@@ -88,7 +88,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     };
 })
 
-.controller('LoginCtrl', function($scope, $state, $timeout, $stateParams, $ionicPopup, $ionicLoading,$ionicPopover, $localstorage, user) {
+.controller('LoginCtrl', function($scope, $state, $timeout, $stateParams, $ionicPopup, $ionicLoading,$ionicPopover, $localstorage, user, $rootScope) {
     $scope.login = {};
     $scope.showLogin = false;
 
@@ -132,11 +132,11 @@ angular.module('Mess.controllers', ['Mess.factories'])
         user.login(loginData)
             .success(function(data) {
                 $ionicLoading.hide();
-                if (data.code == 1) {
+                if (data.status == 1) {
                     console.log("logging in");
                     console.log(data.message);
                     $localstorage.set('profile', JSON.stringify(data.message));
-                    $rootScope.loggedIn = 1;
+                    $rootScope.loggedIn = true;
                     $state.go('app.searchresult');
                 } else {
                     console.log(data.message);

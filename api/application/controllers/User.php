@@ -16,18 +16,19 @@ class User extends CI_Controller {
 	public function register()
 	{
 		$row=$_REQUEST;
-		if($row['pass'])
-			$row['pass']=md5($row['pass']);
+		// if($row['pass'])
+			// $row['pass']=md5($row['pass']);
 		// name, email, pass, branch, address, dob, father, mother, phone, phonedad, phonemom, bloodgroup
 
 		$result['status']=0;
-		$result['message']="Email Already Exists";
+		$result['message']=$_REQUEST;
+		// $result['message']="Email Already Exists";
 
-		if($this->db->insert('users', $row))
-		{
-			$result['status']=1;
-			$result['message']="Successfully Inserted";
-		}
+		// if($this->db->insert('users', $row))
+		// {
+			// $result['status']=1;
+			// $result['message']="Successfully Inserted";
+		// }
 		print json_encode($result);
 	}
 

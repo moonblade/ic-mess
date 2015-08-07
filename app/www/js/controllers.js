@@ -109,7 +109,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     }
 
     $scope.register = function() {
-        $state.go('app.register');
+        $state.go('register');
     }
 
 
@@ -137,7 +137,6 @@ angular.module('Mess.controllers', ['Mess.factories'])
                     console.log(data.message);
                     $localstorage.set('profile', JSON.stringify(data.message));
                     $rootScope.loggedIn = true;
-                    $state.go('app.searchresult');
                 } else {
                     console.log(data.message);
                     var alertPopup = $ionicPopup.alert({
@@ -155,6 +154,63 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 $ionicLoading.hide();
             });
     }
+    ionic.material.ink.displayEffect();
+})
+
+.controller('RegisterCtrl', function($scope, $state, $ionicPopup, $ionicLoading, $http, $templateCache, $stateParams, $timeout, user) {
+    // Set Header
+    $scope.isExpanded = false;
+    $scope.user = {};
+    $scope.submit = function() {
+        $ionicLoading.show();
+        if ($scope.user.Password != $scope.user.ConfPassword) {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Error',
+                template: 'Passwords don\'t match'
+            });
+        } else {
+            var sendData = $scope.user;
+            user.register(sendData)
+                .success(function(data) {
+                    console.log(data);
+                    if (data.status == 1) {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Success',
+                            template: 'You have been successfully registered'
+                        });
+                        alertPopup.then(function(res) {
+                            $state.go('login');
+                        });
+                    } else {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Error',
+                            template: data.message
+                        });
+                    }
+                }).error(function(err) {
+                    console.log(err);
+                }).then(function() {
+                    $ionicLoading.hide();
+                });
+
+        }
+
+    }
+
+    // Set Motion
+    $timeout(function() {
+        ionic.material.motion.slideUp({
+            selector: '.slide-up'
+        });
+    }, 300);
+
+    $timeout(function() {
+        ionic.material.motion.fadeSlideInRight({
+            startVelocity: 3000
+        });
+    }, 700);
+
+    // Set Ink
     ionic.material.ink.displayEffect();
 })
 

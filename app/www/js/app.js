@@ -18,13 +18,10 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
     })
 
 .value('appConfig', {
-    serverUrl: 'http://icccmess-moonblade.rhcloud.com/api/',
-    messUrl: 'http://icccmess-moonblade.rhcloud.com/api/mess/',
-    userUrl: 'http://icccmess-moonblade.rhcloud.com/api/user/',
-    visibilityUrl: 'http://icccmess-moonblade.rhcloud.com/api/visibility/',
-    attendanceUrl: 'http://icccmess-moonblade.rhcloud.com/api/attendance/',
+    serverUrl: 'http://localhost/working/mess/api/',
+    // serverUrl: 'http://icccmess-moonblade.rhcloud.com/api/',
 })
-
+    
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
     // Turn off caching for demo simplicity's sake
@@ -45,8 +42,14 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
 
     .state('login', {
         url: '/login',
-        templateUrl: 'templates/login.html',
+        templateUrl: 'templates/login/login.html',
         controller: 'LoginCtrl'
+    })
+
+    .state('register', {
+        url: '/register',
+        templateUrl: 'templates/register/register.html',
+        controller: 'RegisterCtrl'
     })
 
     .state('app.profile', {

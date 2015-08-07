@@ -193,13 +193,12 @@ p {
 /* Login
 ==================================*/
 #login {
-  background: url('../img/gunt.png') center;
   background-size: 100% 100%;
+  background-color: black;
 }
 
 .app-icon {
-    background: url('../img/login.png') center;
-    background-color: #767676;
+    background: url('../img/food-icon.png') center;
     background-size: cover;
     border-radius: 50%;
     margin: 0 auto;

@@ -20,10 +20,23 @@ angular.module('Mess.factories', [])
 .factory('user', function($http, appConfig, convert) {
     return {
         login: function(loginData) {
+            loginData = convert.toget(loginData);
             return $http({
                 method: 'POST',
-                url: appConfig.userUrl + 'login/',
-                data: convert.toget(loginData),
+                url: appConfig.serverUrl + 'user/login/',
+                data: loginData,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+        },
+        register: function(registerData) {
+            registerData =  convert.toget(registerData);
+            console.log(registerData);
+            return $http({
+                method: 'POST',
+                url: appConfig.serverUrl + 'user/register/',
+                data: registerData,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
@@ -42,6 +55,7 @@ angular.module('Mess.factories', [])
             string_ = string_.replace(/,/g, "&");
             string_ = string_.replace(/"/g, "");
             string_ = string_.replace(/\\/g, "");
+            string_=encodeURI(string_);
             return string_;
         }
     }

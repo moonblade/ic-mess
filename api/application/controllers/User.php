@@ -15,27 +15,32 @@ class User extends CI_Controller {
 
 	public function register()
 	{
-		$row=$_REQUEST;
-		// if($row['pass'])
-			// $row['pass']=md5($row['pass']);
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$row=$request;
+		if(array_key_exists('pass', $row))
+			$row['pass']=md5($row['pass']);
 		// name, email, pass, branch, address, dob, father, mother, phone, phonedad, phonemom, bloodgroup
 
 		$result['status']=0;
 		$result['message']=$_REQUEST;
-		// $result['message']="Email Already Exists";
+		$result['message']="Email Already Exists";
 
-		// if($this->db->insert('users', $row))
-		// {
-			// $result['status']=1;
-			// $result['message']="Successfully Inserted";
-		// }
+		if($this->db->insert('users', $row))
+		{
+			$result['status']=1;
+			$result['message']="Successfully Inserted";
+		}
 		print json_encode($result);
 	}
 
 	public function login()
 	{
-		$row['email']=$this->input->get_post('email');
-		$row['pass']=md5($this->input->get_post('pass'));
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata);
+	
+		$row['email']=$request->email;
+		$row['pass']=md5($request->pass);
 		
 		$result['status']=0;
 		$result['message']="Invalid Username or Password";
@@ -43,6 +48,8 @@ class User extends CI_Controller {
 		$temp=$query->row_array();
 		if($temp)
 		{
+			if($this->isSec($temp['id']) && $temp['level']<2)
+				$temp['level']="2";
 			$result['status']=1;
 			$result['message']=$temp;
 		}
@@ -51,6 +58,9 @@ class User extends CI_Controller {
 
 	public function changePassword()
 	{
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata);
+
 		$id=$this->input->get_post('id');
 		$row['email']=$this->input->get_post('email');
 		$newrow['email']=$this->input->get_post('email');

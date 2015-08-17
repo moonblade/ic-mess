@@ -15,8 +15,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
     }
 
     $scope.logout = function() {
-        $localstorage.setObject('player', {});
-        $state.go('app.login');
+        $localstorage.setObject('profile', {});
+        $state.go('login');
     };
     ////////////////////////////////////////
     // Layout Methods
@@ -88,7 +88,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     };
 })
 
-.controller('LoginCtrl', function($scope, $state, $timeout, $stateParams, $ionicPopup, $ionicLoading,$ionicPopover, $localstorage, user, $rootScope) {
+.controller('LoginCtrl', function($scope, $state, $timeout, $stateParams, $ionicPopup, $ionicLoading, $ionicPopover, $localstorage, user, $rootScope) {
     $scope.login = {};
     $scope.showLogin = false;
 
@@ -98,9 +98,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
         $scope.loginPopover = popover;
     });
 
-    if ($localstorage.get('profile') != undefined)
-    {
-        // $state.go('app.calenderView');
+    if ($localstorage.get('profile') != undefined && $localstorage.get('profile') != '{}') {
+        $state.go('app.calender');
         console.log("calender");
     }
 
@@ -128,7 +127,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
             email: $scope.login.Email,
             pass: $scope.login.Password
         }
-        loginData  = JSON.stringify(loginData);
+        loginData = JSON.stringify(loginData);
         user.login(loginData)
             .success(function(data) {
                 $ionicLoading.hide();
@@ -137,8 +136,10 @@ angular.module('Mess.controllers', ['Mess.factories'])
                     console.log(data.message);
                     $localstorage.set('profile', JSON.stringify(data.message));
                     $rootScope.loggedIn = true;
+                    $state.go('app.calender');
                 } else {
                     console.log(data.message);
+                    console.log(data);
                     var alertPopup = $ionicPopup.alert({
                         title: 'Error',
                         template: data.message
@@ -214,7 +215,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('ProfileCtrl', function($scope, $stateParams, $timeout) {
+.controller('CalenderCtrl', function($scope, $state, $localstorage, $ionicLoading, $ionicPopup, attendance) {
     // Set Header
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
@@ -222,21 +223,119 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.$parent.setExpanded(false);
     $scope.$parent.setHeaderFab(false);
 
-    // Set Motion
-    $timeout(function() {
-        ionic.material.motion.slideUp({
-            selector: '.slide-up'
-        });
-    }, 300);
+    $scope.attendance = {};
+    $scope.profile = $localstorage.getObject('profile');
+    console.log($scope.profile);
+    $scope.view = function() {
+        $ionicLoading.show();
+        attendance.view($scope.profile.id)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    var today = new Date();
+                    // generally allowed to edit tomorrows, before today eight-thirty
+                    today.setDate(today.getDate() + 1);
+                    console.log(today);
+                    for (i in data.message) {
+                        // console.log(i, data.message[i]);
+                        var tempDate = new Date(i);
+                        tempDate.setHours(20);
+                        tempDate.setMinutes(30);
+                        tempDate.setSeconds(0);
+                        var stringDate = {};
+                        tempDate;
+                        stringDate.date = i;
+                        stringDate.dateString = tempDate.toDateString();
+                        stringDate.present = data.message[i];
+                        if (tempDate > today)
+                            stringDate.editable = 1;
+                        else
+                            stringDate.editable = 0;
+                        $scope.attendance[i] = stringDate;
+                    }
+                } else {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                console.log(err);
+            }).then(function() {
+                $ionicLoading.hide();
+            });
+    }
+    $scope.view();
 
-    $timeout(function() {
-        ionic.material.motion.fadeSlideInRight({
-            startVelocity: 3000
+    $scope.setAbsent = function(date) {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Confirm',
+            template: 'Are you sure?'
         });
-    }, 700);
+        confirmPopup.then(function(res) {
+            if (res) {
+                $ionicLoading.show();
+                console.log("Mark Absent On " + date);
+                var data = {};
+                data.id = $scope.profile.id;
+                data.date = date;
+                attendance.setAbsent(data)
+                    .success(function(data) {
+                        if (data.status == 1) {
+                            $scope.view();
+                        } else {
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Error',
+                                template: data.message
+                            })
+                        }
+                    }).error(function(err) {
+                        console.log(err);
+                    }).then(function() {
+                        $ionicLoading.hide();
+                    });
 
-    // Set Ink
+            } else {
+                // confirmPopup.hide();
+            }
+        });
+    }
+
+    $scope.setPresent = function(date) {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Confirm',
+            template: 'Are you sure?'
+        });
+        confirmPopup.then(function(res) {
+            if (res) {
+                $ionicLoading.show();
+                console.log("Mark Present On " + date);
+                var data = {};
+                data.id = $scope.profile.id;
+                data.date = date;
+                attendance.setPresent(data)
+                    .success(function(data) {
+                        if (data.status == 1) {
+                            $scope.view();
+                        } else {
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Error',
+                                template: data.message
+                            })
+                        }
+                    }).error(function(err) {
+                        console.log(err);
+                    }).then(function() {
+                        $ionicLoading.hide();
+                    });
+
+            } else {
+                // confirmPopup.hide();
+            }
+        });
+
+    }
+
     ionic.material.ink.displayEffect();
-})
 
-;
+});

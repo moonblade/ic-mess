@@ -64,10 +64,10 @@
         <!-- Confirm Password -->
         <label class="item item-input item-floating-label">
             <span class="input-label">Confirm Password</span>
-            <input type="password" ng-model="user.confPass" placeholder="Confirm Password">
+            <input type="password" ng-model="dummy.confPass" placeholder="Confirm Password">
         </label>
         <!-- Passwords don't match -->
-        <label id="passwordmatch" ng-if="user.pass!=user.confPass" class="item item-input item-floating-label">
+        <label id="passwordmatch" ng-if="user.pass!=dummy.confPass" class="item item-input item-floating-label">
             Passwords don't match
         </label>
         <!-- Address -->
@@ -96,7 +96,7 @@
             <input type="number" ng-model="user.phonemom" placeholder="Mobile (Mother)">
         </label>
         <!-- Submit -->
-        <button ng-click="submit()" ng-disabled="false" class="item button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">
+        <button ng-click="submit()" ng-disabled="registerForm.$invalid" class="item button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">
             Submit
         </button>
         <!-- </div> -->

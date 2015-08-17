@@ -14,8 +14,11 @@ class Attendance extends CI_Controller {
 	{
 		parent::__construct();
 		$result['status']=0;
-		if(isset($_REQUEST['id']))
-			$id=$_REQUEST['id'];
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		
+		if(array_key_exists('id', $request))
+			$id=$request['id'];
 		else
 			$id=0;
 		$user=new User();
@@ -39,8 +42,11 @@ class Attendance extends CI_Controller {
 	
 	public function view()
 	{
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		
 		$mess=new Mess();
-		$array['id']=$this->input->get_post('id');
+		$array['id']=$request['id'];
 
 		$result['status']=0;
 		$result['message']="Could not find any Entry";
@@ -77,13 +83,16 @@ class Attendance extends CI_Controller {
 
 	public function setAbsent()
 	{
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		
 		$result['status']=0;
 		$result['message']="Change Failed";
 		$mess=new Mess();
 		$user=new User();
 		$currentMess=$mess->getCurrentMess();
-		$array['id']=$this->input->get_post('id');
-		$array['date']=$this->input->get_post('date');
+		$array['id']=$request['id'];
+		$array['date']=$request['date'];
 		$currenttime=(int)date('Gis');
 		$mark=203000;
 		$markdate=date('Y-m-d');
@@ -96,12 +105,12 @@ class Attendance extends CI_Controller {
 
 		if($array['date']<=$markdate)
 		{
-			$result['message']="Invalid Date";
+			$result['message']="Cannot Edit this Date";
 		}
 			
 		else if(date($array['date'])>date('Y-m-d',strtotime($currentMess['start'].' +'.$currentMess['no_of_days'].' days')))
 		{
-			$result['message']="Invalid Date";
+			$result['message']="Cannot Edit this Date";
 		}
 		else
 		{
@@ -109,7 +118,7 @@ class Attendance extends CI_Controller {
 			if($this->db->insert('attendance',$array))
 			{
 				$result['status']=1;
-				$result['message']="Successfully Marked";
+				$result['message']="Successfully Marked Absent";
 			}
 		}
 		print json_encode($result);
@@ -117,12 +126,15 @@ class Attendance extends CI_Controller {
 
 	public function setPresent()
 	{
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		
 		$result['status']=0;
 		$result['message']="Change Failed";
 		$mess=new Mess();
 		$currentMess=$mess->getCurrentMess();
-		$array['id']=$this->input->get_post('id');
-		$array['date']=$this->input->get_post('date');
+		$array['id']=$request['id'];
+		$array['date']=$request['date'];
 		$currenttime=(int)date('Gis');
 		$mark=203000;
 		$markdate=date('Y-m-d');
@@ -143,7 +155,7 @@ class Attendance extends CI_Controller {
 			if($this->db->delete('attendance',$array))
 			{
 				$result['status']=1;
-				$result['message']="Successfully Marked";
+				$result['message']="Successfully Marked Present";
 			}
 		}
 		print json_encode($result);

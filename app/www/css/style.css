@@ -198,7 +198,7 @@ p {
 }
 
 .app-icon {
-    background: url('../img/food-icon.png') center;
+    background: url('../img/icon.png') center;
     background-size: cover;
     border-radius: 50%;
     margin: 0 auto;

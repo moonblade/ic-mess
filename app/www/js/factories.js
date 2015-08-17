@@ -17,13 +17,13 @@ angular.module('Mess.factories', [])
     }
 }])
 
-.factory('user', function($http, appConfig, convert) {
+.factory('user', function($http, appConfig) {
+    var user = appConfig.serverUrl + 'user/';
     return {
         login: function(loginData) {
-            loginData = convert.toget(loginData);
             return $http({
                 method: 'POST',
-                url: appConfig.serverUrl + 'user/login/',
+                url: user + 'login/',
                 data: loginData,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -31,11 +31,10 @@ angular.module('Mess.factories', [])
             });
         },
         register: function(registerData) {
-            registerData =  convert.toget(registerData);
             console.log(registerData);
             return $http({
                 method: 'POST',
-                url: appConfig.serverUrl + 'user/register/',
+                url: user + 'register/',
                 data: registerData,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -45,20 +44,40 @@ angular.module('Mess.factories', [])
     }
 })
 
-.factory('convert', function() {
+.factory('attendance', function($http, appConfig) {
+    var attendance = appConfig.serverUrl + 'attendance/'
     return {
-        toget: function(data) {
-            var string_ = JSON.stringify(data);
-            string_ = string_.replace(/{/g, "");
-            string_ = string_.replace(/}/g, "");
-            string_ = string_.replace(/:/g, "=")
-            string_ = string_.replace(/,/g, "&");
-            string_ = string_.replace(/"/g, "");
-            string_ = string_.replace(/\\/g, "");
-            string_=encodeURI(string_);
-            return string_;
+        view: function(id) {
+            return $http({
+                method: 'POST',
+                url: attendance + 'view/',
+                data: {
+                    'id': id
+                },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+        },
+        setAbsent: function(data) {
+            return $http({
+                method: 'POST',
+                url: attendance + 'setAbsent/',
+                data: data,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+        },
+        setPresent: function(data) {
+            return $http({
+                method: 'POST',
+                url: attendance + 'setPresent/',
+                data: data,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
         }
     }
-})
-
-;
+});

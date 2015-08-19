@@ -6,22 +6,22 @@
 angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
 
 .run(function($ionicPlatform) {
-        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-        // for form inputs)
-        if (window.cordova && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        }
-        if (window.StatusBar) {
-            // org.apache.cordova.statusbar required
-            StatusBar.styleDefault();
-        }
-    })
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+    // for form inputs)
+    if (window.cordova && window.cordova.plugins.Keyboard) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    }
+    if (window.StatusBar) {
+        // org.apache.cordova.statusbar required
+        StatusBar.styleDefault();
+    }
+})
 
 .value('appConfig', {
     serverUrl: 'http://localhost/working/mess/api/',
     // serverUrl: 'http://icccmess-moonblade.rhcloud.com/api/',
 })
-    
+
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
     // Turn off caching for demo simplicity's sake
@@ -56,14 +56,29 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
         url: '/calender',
         views: {
             'menuContent': {
-                templateUrl: 'templates/calender/calender.html',
+                templateUrl: 'templates/mess/calender.html',
                 controller: 'CalenderCtrl'
             },
             'fabContent': {
-                template: ''
+                template: '',
+                controller: ''
             }
         }
     })
-    // if none of the above states are matched, use this as the fallback
+
+    .state('app.dashboard', {
+            url: '/dashboard',
+            views: {
+                'menuContent': {
+                    templateUrl: 'templates/mess/dashBoard.html',
+                    controller: 'DashBoardCtrl'
+                },
+                'fabContent': {
+                    template: '<button ng-if="fabShown" id="fab-add-mess" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
+                    controller: 'DashBoardCtrl'
+                }
+            }
+        })
+        // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
 });

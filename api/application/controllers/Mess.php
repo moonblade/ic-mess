@@ -47,22 +47,24 @@ class Mess extends CI_Controller {
 		print json_encode($result);
 	}
 
-	public function getDetails($id)
+	public function getDetails($id,$op=1)
 	{
 		$result['status']=0;
 		$result['message']="No Details Found";
 		$array['mid']=$id;
 		$query=$this->db->get_where('mess',$array);
 		$temp=$query->row_array();
-		$this->db->select('id');
-		$query=$this->db->get_where('sec',$array);
+		$query=$this->db->query('select name, phone from users where id in (select id from sec where mid='.$array['mid'].')');
 		$temp['sec']=$query->result();
 		if($temp)
 		{
 			$result['status']=1;
 			$result['message']=$temp;
 		}
-		print json_encode($result);
+		if($op==1)
+			print json_encode($result);
+		else
+			return $result;
 	}
 
 	public function getDetailsCurrent()
@@ -81,6 +83,12 @@ class Mess extends CI_Controller {
 	{	
 		$temp=$this->getCurrentMess();
 		return($temp['start']);	
+	}
+
+	public function getNod()
+	{	
+		$temp=$this->getCurrentMess();
+		return($temp['no_of_days']);	
 	}
 
 	public function getCurrentMess()

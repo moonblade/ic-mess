@@ -215,7 +215,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('CalenderCtrl', function($scope, $state, $localstorage, $ionicLoading, $ionicPopup, attendance) {
+.controller('CalenderCtrl', function($scope, $state, $localstorage, $ionicLoading, $ionicPopup, attendance, $rootScope) {
     // Set Header
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
@@ -223,6 +223,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.$parent.setExpanded(false);
     $scope.$parent.setHeaderFab(false);
 
+    $rootScope.messStatus = 0;
+    $rootScope.messString = "";
     $scope.attendance = {};
     $scope.profile = $localstorage.getObject('profile');
     console.log($scope.profile);
@@ -254,10 +256,10 @@ angular.module('Mess.controllers', ['Mess.factories'])
                         $scope.attendance[i] = stringDate;
                     }
                 } else {
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Error',
-                        template: data.message
-                    });
+                    $rootScope.messStatus = data.status;
+                    $rootScope.messString = data.message;
+                    $ionicLoading.hide();
+                    $state.go('app.dashboard');
                 }
             }).error(function(err) {
                 console.log(err);
@@ -328,9 +330,6 @@ angular.module('Mess.controllers', ['Mess.factories'])
                     }).then(function() {
                         $ionicLoading.hide();
                     });
-
-            } else {
-                // confirmPopup.hide();
             }
         });
 
@@ -338,4 +337,73 @@ angular.module('Mess.controllers', ['Mess.factories'])
 
     ionic.material.ink.displayEffect();
 
+})
+
+.controller('DashBoardCtrl', function($scope, $ionicLoading, $rootScope, $ionicPopup,$localstorage, mess, user) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = false;
+    $scope.$parent.setExpanded(false);
+    $scope.$parent.setHeaderFab(false);
+    $scope.details = {};
+    $scope.costDetails = {};
+    $scope.fabShown = false;
+    $scope.nodata = false;
+    $scope.profile = $localstorage.getObject('profile');
+
+    $scope.getDetailsCurrent = function() {
+        $ionicLoading.show();
+        mess.getDetailsCurrent()
+            .success(function(data) {
+                if (data.status == 1) {
+                    console.log(data.message);
+                    $scope.details = data.message;
+                } else {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error ' + JSON.stringify(err)
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.details.startDate = new Date($scope.details.start);
+                $scope.details.endDate = new Date($scope.details.start);
+                $scope.details.endDate.setDate($scope.details.startDate.getDate() + $scope.details.no_of_days);
+                $scope.details.endDate = new Date($scope.details.endDate).toDateString();
+                $scope.details.startDate = new Date($scope.details.startDate).toDateString();
+            });
+        $scope.dummy={
+            'id': $scope.profile.id
+        }
+        user.getCostDetails($scope.dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    console.log(data.message);
+                    $scope.costDetails = data.message;
+                    console.log($scope.costDetails);
+                } else {
+                    if(data.status==2)
+                        $scope.fabShown = true;
+                    $scope.nodata=true;
+                    $scope.message = data.message;
+                }
+            }).error(function(err) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error '
+                });
+            });
+
+    }
+    $scope.getDetailsCurrent();
+
+
+
+    ionic.material.ink.displayEffect();
 });

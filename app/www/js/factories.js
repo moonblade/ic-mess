@@ -31,13 +31,22 @@ angular.module('Mess.factories', [])
             });
         },
         register: function(registerData) {
-            console.log(registerData);
             return $http({
                 method: 'POST',
                 url: user + 'register/',
                 data: registerData,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+        },
+        getCostDetails: function(data) {
+            return $http({
+                method: 'POST',
+                url: user + 'getCostDetailsCurrent/',
+                data: data,
+                headers: {
+                    'Content-Type' : 'application/x-www-form-urlencoded'
                 }
             });
         }
@@ -80,4 +89,21 @@ angular.module('Mess.factories', [])
             });
         }
     }
-});
+})
+
+.factory('mess', function($http,appConfig){
+    var mess=appConfig.serverUrl + 'mess/'
+    return{
+        getDetailsCurrent: function() {
+            return $http({
+                method: 'POST',
+                url: mess + 'getDetailsCurrent/',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+        }
+    }
+})
+
+;

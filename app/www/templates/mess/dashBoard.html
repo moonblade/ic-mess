@@ -1,0 +1,41 @@
+<ion-view view-title="DashBoard">
+    <ion-content ng-class="{expanded:isExpanded}">
+        <div class="card stable-bg list padding">
+            <h4>Attendence and Cost</h4>
+            <div ng-if="!nodata">
+                <span class="item">
+                Days Present : {{costDetails.daysPresent}}
+                </span>
+                <span class="item">
+                Total Cost : {{costDetails.cost}} Rs
+                </span>
+            </div>
+            <div ng-if="nodata">
+                <span class="item">
+                {{message}}
+                </span>
+            </div>
+        </div>
+        <div class="card stable-bg list padding">
+            <h4>Current Mess</h4>
+            <span class="item">
+                Start Date : {{details.startDate}}
+            </span>
+            <span class="item">
+                End Date : {{details.endDate}}
+            </span>
+            <span class="item">
+                Duration : {{details.no_of_days}} Days
+            </span>
+        </div>
+        <div class="card stable-bg list padding">
+            <h4>Mess Costs</h4>
+            <span class="item">
+                Establishment Fee : {{details.establishment}} Rs
+            </span>
+            <span class="item">
+                Per Day Cost : {{details.cost_per_day}} Rs
+            </span>
+        </div>
+    </ion-content>
+</ion-view>

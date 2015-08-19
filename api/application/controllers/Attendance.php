@@ -15,28 +15,30 @@ class Attendance extends CI_Controller {
 		parent::__construct();
 		$result['status']=0;
 		$postdata = file_get_contents("php://input");
-	    $request = json_decode($postdata, true);
-		
-		if(array_key_exists('id', $request))
-			$id=$request['id'];
-		else
-			$id=0;
+	    $request = json_decode($postdata, true);	
+		$id=$request['id'];
 		$user=new User();
-		$isInMess=$user->isInMess($id);
-		if($isInMess==null)
+		$isInCurrentMess=$user->isInCurrentMess($id);
+		if($isInCurrentMess==null)
 		{
+			$result['status']=2;
 			$result['message']="You haven't enrolled in the current mess yet";
 			print json_encode($result);
+			exit();
 		}
-		else if($isInMess==0)
+		else if($isInCurrentMess==0)
 		{
+			$result['status']=3;
 			$result['message']="You haven't been Accepted to the current mess yet";
 			print json_encode($result);
+			exit();
 		}
-		else if($isInMess==-1)
+		else if($isInCurrentMess==-1)
 		{
+			$result['status']=4;
 			$result['message']="You have been barred from the mess (Mess Out)";
 			print json_encode($result);
+			exit();
 		}
 	}
 	
@@ -69,6 +71,19 @@ class Attendance extends CI_Controller {
 		$result['message']=$days;
 		print json_encode($result);
 
+	}
+
+	public function nodPresent($id,$mid)
+	{
+		$mess = new Mess();
+		$query=$this->db->query('select count(*) as count from attendance where id='.$id.' and mid='.$mid);
+		$temp=$query->row_array();
+		$nod=$mess->getNod();
+		if($temp)
+		{
+			$nod=$nod-$temp['count'];
+		}
+		return $nod;
 	}
 
 	private function dateAbsent($date,$daysAbsent)

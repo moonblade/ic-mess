@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 require_once 'Mess.php';
+require_once 'Attendance.php';
 
 class User extends CI_Controller {
 
@@ -94,15 +95,49 @@ class User extends CI_Controller {
 		print json_encode($result);
 	}
 
-	public function isInMess($id)
+	public function getCostDetails($mid)
+	{
+		$result['status']=0;
+		$result['message']="Could Not find Entry";
+
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);	
+		$id=$request['id'];
+		$isInCurrentMess=$this->isInMess($id,$mid);
+		$attendance = new Attendance();
+		$mess = new Mess();
+		$currentMess = $mess->getDetails($mid,2);
+		$currentMess = $currentMess['message'];
+		$temp['daysPresent']=$attendance->nodPresent($id,$mid);
+		$temp['cost']=$currentMess['establishment']+$temp['daysPresent']*$currentMess['cost_per_day'];
+		$result['status']=1;
+		$result['message']=$temp;
+		return($result);
+	}
+
+	public function getCostDetailsCurrent()
+	{
+		$mess=new Mess();
+		$mid=$mess->getCurrentMid();
+		print json_encode($this->getCostDetails($mid));
+	}
+	public function isInMess($id,$mid)
 	{
 		$mess=new Mess();
 		$array['id']=$id;
-		$array['mid']=$mess->getCurrentMid();
+		$array['mid']=$mid;
 		$array['status']=1;
 		$query=$this->db->get_where('inmate',$array);
 		$temp=$query->row_array();
 		return($temp['status']);
+	}
+
+	public function isInCurrentMess($id)
+	{
+		$mess=new Mess();
+		$array['id']=$id;
+		$array['mid']=$mess->getCurrentMid();
+		return($this->isInMess($array['id'],$array['mid']));
 	}
 
 	public function isMD($id)

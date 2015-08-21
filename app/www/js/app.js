@@ -79,6 +79,20 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
                 }
             }
         })
+
+    .state('app.admin', {
+            url: '/admin',
+            views: {
+                'menuContent': {
+                    templateUrl: 'templates/mess/admin.html',
+                    controller: 'AdminCtrl'
+                },
+                'fabContent': {
+                    template: '<button ng-if="fabShown" id="fab-add-mess" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
+                    controller: 'AdminCtrl'
+                }
+            }
+        })
         // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
 });

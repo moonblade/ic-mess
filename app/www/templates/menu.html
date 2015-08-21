@@ -22,6 +22,9 @@
                 <ion-item nav-clear menu-close ui-sref="app.dashboard">
                     DashBoard
                 </ion-item>
+                <ion-item nav-clear menu-close ui-sref="app.admin" ng-show="profile.level>1">
+                    Admin Panel
+                </ion-item>
                 <ion-item nav-clear menu-close ng-click="logout()">
                     Logout
                 </ion-item>

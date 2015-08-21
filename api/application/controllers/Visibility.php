@@ -30,7 +30,7 @@ class Visibility extends CI_Controller {
 		$result['message']="Could Not Update Completely";
 		$mess=new Mess();
 		$dates=$this->input->get_post('date[]');
-		$current=$mess->getCurrentMess();
+		$current=$mess->getMessDetails();
 		$array['mid']=$current['mid'];
 		$count=0;
 		foreach ($dates as $array['date']) {
@@ -51,7 +51,7 @@ class Visibility extends CI_Controller {
 		$result['message']="Could Not Update Completely";
 		$mess=new Mess();
 		$dates=$this->input->get_post('date[]');
-		$current=$mess->getCurrentMess();
+		$current=$mess->getMessDetails();
 		$array['mid']=$current['mid'];
 		$count=0;
 		foreach ($dates as $array['date']) {

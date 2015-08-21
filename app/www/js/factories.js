@@ -43,17 +43,17 @@ angular.module('Mess.factories', [])
         getCostDetails: function(data) {
             return $http({
                 method: 'POST',
-                url: user + 'getCostDetailsCurrent/',
+                url: user + 'getCostDetails/',
                 data: data,
                 headers: {
-                    'Content-Type' : 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
         }
     }
 })
 
-.factory('attendance', function($http, appConfig) {
+.factory('attendance', function($http, appConfig, generic) {
     var attendance = appConfig.serverUrl + 'attendance/'
     return {
         view: function(id) {
@@ -91,19 +91,44 @@ angular.module('Mess.factories', [])
     }
 })
 
-.factory('mess', function($http,appConfig){
-    var mess=appConfig.serverUrl + 'mess/'
-    return{
+.factory('mess', function($http, appConfig,generic) {
+    var mess = appConfig.serverUrl + 'mess/'
+    return {
         getDetailsCurrent: function() {
-            return $http({
-                method: 'POST',
-                url: mess + 'getDetailsCurrent/',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+            return generic.generic(mess + 'getDetails/');
         }
     }
 })
 
-;
+.factory('admin', function($http, appConfig, generic) {
+    var admin = appConfig.serverUrl + 'admin/'
+    return {
+        getCount: function(data) {
+            return generic.generic(admin + 'getCount',data);
+        },
+        getPending: function(data) {
+            return generic.generic(admin + 'viewPending/', data);
+        },
+        changeStatus: function(data,status) {
+            if(status==undefined)
+                status="";
+            return generic.generic(admin + 'changeStatus/'+status, data);
+        }
+    }
+})
+
+.factory('generic', function($http) {
+    return {
+        generic: function(url, data) {
+            return $http({
+                method: 'POST',
+                url: url,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+
+        }
+    }
+});

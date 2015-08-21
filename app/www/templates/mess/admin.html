@@ -1,0 +1,78 @@
+<ion-view view-title="Admin Panel">
+    <ion-content ng-class="{expanded:isExpanded}">
+        <div class="card stable-bg list padding">
+            <div style="float: left;">
+                <h4>Present Count</h4>
+            </div>
+            <div ng-show="!nodata">
+                <div id="countPresent" style="float: right;">
+                    <h4>{{tomorrowCount}}</h4>
+                </div>
+                <a ng-repeat="day in countDate" class="">
+                    <span class="item">
+                    {{day.relative}} ({{day.String}}) : {{day.count}}
+                </span>
+                </a>
+            </div>
+            <div ng-show="nodata">
+                <span class="item">
+                    {{message}}
+                </span>
+            </div>
+        </div>
+        <div class="card stable-bg list padding" ng-show="showPendingCard">
+            <div ng-click="expandPendingCard=!expandPendingCard">
+                <div style="float: left;">
+                    <h4>Pending List</h4>
+                    <!-- <h4>Pending List ({{count[0]}})</h4> -->
+                </div>
+                <div style="float: right;">
+                    <h4><i class="icon ion-arrow-down-b" ng-if="!expandPendingCard"></i><i class="icon ion-arrow-up-b" ng-if="expandPendingCard"></i></h4>
+                </div>
+            </div>
+            <div ng-show="expandPendingCard">
+                    <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
+                        <span ng-show="person.status==0" class="item">
+                    <h3>{{person.name}} ({{person.branch}})</h3>
+                    </span>
+                    </a>
+            </div>
+        </div>
+        <div class="card stable-bg list padding" ng-show="showAcceptedCard">
+            <div ng-click="expandAcceptedCard=!expandAcceptedCard">
+                <div style="float: left;">
+                    <h4>Accepted List</h4>
+                    <!-- <h4>Accepted List ({{count[1]}})</h4> -->
+                </div>
+                <div style="float: right;">
+                    <h4><i class="icon ion-arrow-down-b" ng-if="!expandAcceptedCard"></i><i class="icon ion-arrow-up-b" ng-if="expandAcceptedCard"></i></h4>
+                </div>
+            </div>
+            <div ng-show="expandAcceptedCard">
+                    <a ng-click="changeStatus(person.id,person.name,2)" ng-repeat="person in personList" class="">
+                        <span ng-show="person.status==1" class="item">
+                    <h3>{{person.name}} ({{person.branch}})</h3>
+                    </span>
+                    </a>
+            </div>
+        </div>
+        <div class="card stable-bg list padding" ng-show="showBarredCard">
+            <div ng-click="expandBarredCard=!expandBarredCard">
+                <div style="float: left;">
+                    <h4>Barred List</h4>
+                    <!-- <h4>Barred List ({{count[2]}})</h4> -->
+                </div>
+                <div style="float: right;">
+                    <h4><i class="icon ion-arrow-down-b" ng-if="!expandBarredCard"></i><i class="icon ion-arrow-up-b" ng-if="expandBarredCard"></i></h4>
+                </div>
+            </div>
+            <div ng-show="expandBarredCard">
+                    <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
+                        <span ng-show="person.status==2" class="item">
+                    <h3>{{person.name}} ({{person.branch}})</h3>
+                    </span>
+                    </a>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

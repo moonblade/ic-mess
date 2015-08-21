@@ -6,6 +6,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.isExpanded = false;
     $scope.hasHeaderFabLeft = false;
     $scope.hasHeaderFabRight = false;
+    $scope.profile = $localstorage.getObject('profile');
 
     var navIcons = document.getElementsByClassName('ion-navicon');
     for (var i = 0; i < navIcons.length; i++) {
@@ -148,9 +149,10 @@ angular.module('Mess.controllers', ['Mess.factories'])
             })
             .error(function(err) {
                 console.log(err);
+                $ionicLoading.hide();
                 var alertPopup = $ionicPopup.alert({
                     title: 'Error',
-                    template: 'Some error occured'
+                    template: 'Connection Error'
                 });
                 $ionicLoading.hide();
             });
@@ -189,6 +191,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                         });
                     }
                 }).error(function(err) {
+                    $ionicLoading.hide();
                     console.log(err);
                 }).then(function() {
                     $ionicLoading.hide();
@@ -262,6 +265,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                     $state.go('app.dashboard');
                 }
             }).error(function(err) {
+                $ionicLoading.hide();
                 console.log(err);
             }).then(function() {
                 $ionicLoading.hide();
@@ -292,6 +296,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                             })
                         }
                     }).error(function(err) {
+                        $ionicLoading.hide();
                         console.log(err);
                     }).then(function() {
                         $ionicLoading.hide();
@@ -326,6 +331,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                             })
                         }
                     }).error(function(err) {
+                        $ionicLoading.hide();
                         console.log(err);
                     }).then(function() {
                         $ionicLoading.hide();
@@ -339,7 +345,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
 
 })
 
-.controller('DashBoardCtrl', function($scope, $ionicLoading, $rootScope, $ionicPopup,$localstorage, mess, user) {
+.controller('DashBoardCtrl', function($scope, $ionicLoading, $rootScope, $ionicPopup, $localstorage, mess, user, $window) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -351,6 +357,12 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.nodata = false;
     $scope.profile = $localstorage.getObject('profile');
 
+
+    $scope.call = function(number) {
+        console.log("calling " + number);
+        $window.open('tel:' + number);
+    }
+
     $scope.getDetailsCurrent = function() {
         $ionicLoading.show();
         mess.getDetailsCurrent()
@@ -358,13 +370,9 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 if (data.status == 1) {
                     console.log(data.message);
                     $scope.details = data.message;
-                } else {
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Error',
-                        template: data.message
-                    });
                 }
             }).error(function(err) {
+                $ionicLoading.hide();
                 var alertPopup = $ionicPopup.alert({
                     title: 'Error',
                     template: 'Connection Error ' + JSON.stringify(err)
@@ -373,37 +381,172 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 $ionicLoading.hide();
                 $scope.details.startDate = new Date($scope.details.start);
                 $scope.details.endDate = new Date($scope.details.start);
-                $scope.details.endDate.setDate($scope.details.startDate.getDate() + $scope.details.no_of_days);
+                $scope.details.endDate.setDate($scope.details.startDate.getDate() + parseInt($scope.details.no_of_days));
+                console.log($scope.details.endDate);
                 $scope.details.endDate = new Date($scope.details.endDate).toDateString();
                 $scope.details.startDate = new Date($scope.details.startDate).toDateString();
             });
-        $scope.dummy={
+        $scope.dummy = {
             'id': $scope.profile.id
         }
+    }
+    $scope.getDetailsCurrent();
+
+    $scope.getCostDetails = function() {
+        $ionicLoading.show();
         user.getCostDetails($scope.dummy)
             .success(function(data) {
                 console.log(data);
                 if (data.status == 1) {
-                    console.log(data.message);
                     $scope.costDetails = data.message;
-                    console.log($scope.costDetails);
                 } else {
-                    if(data.status==2)
+                    if (data.status == 2)
                         $scope.fabShown = true;
-                    $scope.nodata=true;
+                    $scope.nodata = true;
                     $scope.message = data.message;
                 }
             }).error(function(err) {
+                $ionicLoading.hide();
                 var alertPopup = $ionicPopup.alert({
                     title: 'Error',
                     template: 'Connection Error '
                 });
+            }).then(function() {
+                $ionicLoading.hide();
+            });
+    }
+    $scope.getCostDetails();
+
+    ionic.material.ink.displayEffect();
+})
+
+.controller('AdminCtrl', function($scope, $localstorage, $ionicPopup, $ionicLoading, admin, $ionicPopover) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = false;
+    $scope.$parent.setExpanded(false);
+    $scope.$parent.setHeaderFab(false);
+    $scope.countDate = [];
+    $scope.fabShown = false;
+    $scope.nodata = false;
+    $scope.profile = $localstorage.getObject('profile');
+    $scope.tomorrowCount = 0;
+    $scope.pendingList = {};
+
+    $scope.expandPendingCard = false;
+    $scope.showPendingCard = false;
+    $scope.expandAcceptedCard = false;
+    $scope.showAcceptedCard = false;
+    $scope.expandBarredCard = false;
+    $scope.showBarredCard = false;
+
+    var today = new Date();
+    var tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
+    $scope.getDetailsCurrent = function(date) {
+        $ionicLoading.show();
+        var dummy = {
+            'id': $scope.profile.id,
+            'date': date
+        }
+        admin.getCount(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.count += 1;
+                    var toPush = {};
+                    toPush.String = date.toDateString();
+                    toPush.count = data.message;
+                    toPush.relative = "Today";
+                    if (date == tomorrow) {
+                        toPush.relative = "Tomorrow";
+                        $scope.tomorrowCount = data.message;
+                    }
+                    $scope.countDate.push(toPush);
+                } else {
+                    if (date == tomorrow)
+                        $scope.nodata = true;
+                    $scope.message = data.message;
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                console.log(err);
+            }).then(function() {
+                $ionicLoading.hide();
+            });
+    }
+    $scope.getDetailsCurrent(tomorrow);
+    $scope.getDetailsCurrent(today);
+
+    $scope.stateExists = function(list,status) {
+        var a = 0;
+        list.forEach(function(person) {
+            if (person.status == status) {
+                a = a+1;
+            }
+        });
+        return (a);
+    }
+
+    $scope.getPending = function() {
+        $ionicLoading.show();
+        var sendData = {
+            'id': $scope.profile.id
+        }
+        admin.getPending(sendData)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.personList = data.message;
+                    var tempCount;
+                    if ($scope.stateExists($scope.personList,0))
+                        $scope.showPendingCard = true;
+                    if ($scope.stateExists($scope.personList,1))
+                        $scope.showAcceptedCard = true;
+                    if ($scope.stateExists($scope.personList,2))
+                        $scope.showBarredCard = true;
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                console.log(err);
+            }).then(function() {
+                $ionicLoading.hide();
             });
 
     }
-    $scope.getDetailsCurrent();
+    $scope.getPending();
 
-
-
-    ionic.material.ink.displayEffect();
+    $scope.changeStatus = function(id, name, status) {
+        var question='Accept ' + name + '?';
+        if(status==2)
+            var question='Bar ' + name + '?';
+        var confirm = $ionicPopup.confirm({
+            title: 'Confirm',
+            template: question
+        }).then(function(res) {
+            if (res) {
+                $ionicLoading.show();
+                var dummy = {
+                    'id': $scope.profile.id,
+                    'acceptId': id
+                }
+                admin.changeStatus(dummy,status)
+                    .success(function(data) {
+                        console.log(data);
+                        if (data.status == 1) {
+                            $scope.getPending();
+                        } else {
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Error',
+                                template: data.message
+                            });
+                        }
+                    }).error(function(err) {
+                        $ionicLoading.hide();
+                        console.log(err);
+                    }).then(function() {
+                        $ionicLoading.hide();
+                    });
+            }
+        });
+    }
 });

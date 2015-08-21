@@ -19,7 +19,11 @@ class Attendance extends CI_Controller {
 		$id=$request['id'];
 		$user=new User();
 		$isInCurrentMess=$user->isInCurrentMess($id);
-		if($isInCurrentMess==null)
+		if($user->isSec($id) || $user->isMD($id))
+		{
+
+		}
+		else if($isInCurrentMess==null)
 		{
 			$result['status']=2;
 			$result['message']="You haven't enrolled in the current mess yet";
@@ -46,29 +50,33 @@ class Attendance extends CI_Controller {
 	{
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);
-		
+			
 		$mess=new Mess();
 		$array['id']=$request['id'];
 
 		$result['status']=0;
 		$result['message']="Could not find any Entry";
 
-		$currentMess=$mess->getCurrentMess();
-		$array['mid']=$currentMess['mid'];
-		$mid=$currentMess['mid'];
-		$start=$currentMess['start'];
-		$nod=$currentMess['no_of_days'];
-		$daysAbsent=$this->db->get_where('attendance',$array)->result();
-		for($i=0;$i<$nod;$i++)
+		$currentMid=$mess->getCurrentMid(0);
+		if($currentMid!=0)
 		{
-			$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
-			if($this->dateAbsent($date,$daysAbsent))
-				$days[$date]=0;
-			else			
-				$days[$date]=1;
+			$currentMess=$mess->getMessDetails($currentMid);
+			$array['mid']=$currentMess['mid'];
+			$mid=$currentMess['mid'];
+			$start=$currentMess['start'];
+			$nod=$currentMess['no_of_days'];
+			$daysAbsent=$this->db->get_where('attendance',$array)->result();
+			for($i=0;$i<$nod;$i++)
+			{
+				$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+				if($this->dateAbsent($date,$daysAbsent))
+					$days[$date]=0;
+				else			
+					$days[$date]=1;
+			}
+			$result['status']=1;
+			$result['message']=$days;
 		}
-		$result['status']=1;
-		$result['message']=$days;
 		print json_encode($result);
 
 	}
@@ -96,7 +104,7 @@ class Attendance extends CI_Controller {
 		return 0;
 	}
 
-	public function setAbsent()
+	public function setAbsent($mid=0)
 	{
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);
@@ -105,7 +113,8 @@ class Attendance extends CI_Controller {
 		$result['message']="Change Failed";
 		$mess=new Mess();
 		$user=new User();
-		$currentMess=$mess->getCurrentMess();
+		if($mid==0)
+			$currentMess=$mess->getMessDetails();
 		$array['id']=$request['id'];
 		$array['date']=$request['date'];
 		$currenttime=(int)date('Gis');
@@ -147,7 +156,7 @@ class Attendance extends CI_Controller {
 		$result['status']=0;
 		$result['message']="Change Failed";
 		$mess=new Mess();
-		$currentMess=$mess->getCurrentMess();
+		$currentMess=$mess->getMessDetails();
 		$array['id']=$request['id'];
 		$array['date']=$request['date'];
 		$currenttime=(int)date('Gis');
@@ -185,25 +194,8 @@ class Attendance extends CI_Controller {
 			$result['message']=0;
 		print json_encode($result);
 	}
-	public function getTodayCount()
-	{
-		$array['date']=$this->input->get_post('date');
-		$result['status']=1;
-		if($temp=$this->enrolled())
-		{	
-			$query=$this->db->query("select count(id) as count from attendance where date='".$array['date']."'");
-			$tempRes=$query->row_array();
-			if($tempRes)
-				$result['message']=$temp-$tempRes['count'];
-			else
-				$result['message']=$temp;
-		}
-		else
-			$result['message']=0;
-		print json_encode($result);
-	}
 
-	private function enrolled()
+	public function enrolled()
 	{
 		$mess=new Mess();
 		$mid=$mess->getCurrentMid();

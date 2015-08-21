@@ -225,3 +225,15 @@ p {
   font: bold 6vw "Roboto";
   color: tomato;
 }
+
+/*Admin
+==================================*/
+#countPresent {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    border: 1px solid red;
+    /*background-color: tomato;*/
+    text-align: center;
+
+}

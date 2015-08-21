@@ -95,40 +95,46 @@ class User extends CI_Controller {
 		print json_encode($result);
 	}
 
-	public function getCostDetails($mid)
+	public function getCostDetails($mid=0,$op=0)
 	{
 		$result['status']=0;
-		$result['message']="Could Not find Entry";
+		$result['message']="Mess complete";
 
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);	
 		$id=$request['id'];
+		$mess=new Mess();
+		if($mid==0)
+			$mid=$mess->getCurrentMid();
 		$isInCurrentMess=$this->isInMess($id,$mid);
 		$attendance = new Attendance();
 		$mess = new Mess();
 		$currentMess = $mess->getDetails($mid,2);
-		$currentMess = $currentMess['message'];
-		$temp['daysPresent']=$attendance->nodPresent($id,$mid);
-		$temp['cost']=$currentMess['establishment']+$temp['daysPresent']*$currentMess['cost_per_day'];
-		$result['status']=1;
-		$result['message']=$temp;
+		if($currentMess['status']==1)
+		{
+			$currentMess = $currentMess['message'];
+			$temp['daysPresent']=$attendance->nodPresent($id,$mid);
+			$temp['cost']=$currentMess['establishment']+$temp['daysPresent']*$currentMess['cost_per_day'];
+			$result['status']=1;
+			$result['message']=$temp;
+		}
+		if($op==0)
+			print json_encode($result);
 		return($result);
 	}
 
-	public function getCostDetailsCurrent()
-	{
-		$mess=new Mess();
-		$mid=$mess->getCurrentMid();
-		print json_encode($this->getCostDetails($mid));
-	}
-	public function isInMess($id,$mid)
+	public function isInMess($id,$mid,$status=1,$op=0)
 	{
 		$mess=new Mess();
 		$array['id']=$id;
 		$array['mid']=$mid;
-		$array['status']=1;
+		$array['status']=$status;
+		$result['status']=1;
 		$query=$this->db->get_where('inmate',$array);
 		$temp=$query->row_array();
+		$result['message']=$temp['status'];
+		if($op!=0)
+			print json_encode($result);
 		return($temp['status']);
 	}
 

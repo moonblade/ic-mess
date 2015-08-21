@@ -28,17 +28,17 @@
                 Branch
             </div>
             <select ng-model="user.branch">
-                <option value="Other">Not Applicable</option>
-                <option value="Applied Electronics">Applied Electronics and Instrumentation</option>
-                <option value="Architecture">Architecture</option>
-                <option value="Business Administration">Business Administration</option>
-                <option value="Civil Engineering">Civil Engineering</option>
-                <option value="Computer Applications">Computer Applications</option>
-                <option value="Computer science">Computer science and Engineering</option>
-                <option value="Electrical Engineering">Electrical Engineering</option>
-                <option value="Electronics And Communication">Electronics And Communication Engineering</option>
-                <option value="Industrial Engineering">Industrial Engineering</option>
-                <option selected="" value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="NA">Not Applicable</option>
+                <option value="AE">Applied Electronics and Instrumentation</option>
+                <option value="AR">Architecture</option>
+                <option value="MBA">Business Administration</option>
+                <option value="CIV">Civil Engineering</option>
+                <option value="MCA">Computer Applications</option>
+                <option value="CSE">Computer science and Engineering</option>
+                <option value="EEE">Electrical Engineering</option>
+                <option value="EC">Electronics And Communication Engineering</option>
+                <option value="IE">Industrial Engineering</option>
+                <option selected="" value="ME">Mechanical Engineering</option>
             </select>
         </label>
         <!-- DOB -->
@@ -67,7 +67,7 @@
             <input type="password" ng-model="dummy.confPass" placeholder="Confirm Password">
         </label>
         <!-- Passwords don't match -->
-        <label id="passwordmatch" ng-if="user.pass!=dummy.confPass" class="item item-input item-floating-label">
+        <label id="passwordmatch" ng-show="user.pass!=dummy.confPass" class="item item-input item-floating-label">
             Passwords don't match
         </label>
         <!-- Address -->

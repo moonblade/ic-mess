@@ -13,119 +13,75 @@ class Mess extends CI_Controller {
 		print "Mess Functions Php";
 	}
 
-	public function add()
-	{
-
-		$result['status']=0;
-		$result['message']="Permission Denied";
-		$user = new User();
-		$id=$this->input->get_post('id');
-		if($user->isMD($id))
-		{
-			$today=date("Y-m-d");
-			$buffer='5';
-			$row['start']=$this->input->get_post('start');
-			$current=$this->getCurrentMess();
-			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days'))
-				|| date($row['start'])>date('Y-m-d',strtotime($today.' +'.$buffer.' days')))
-				{
-				$result['message']="Date Error";
-			}
-			else{
-				$result['message']="Some Error Occured";
-				if($temp=$this->input->get_post('nod'))
-					$row['no_of_days']=$temp;
-				if($this->db->insert('mess', $row))
-				{
-					$result['status']=1;
-					$result['message']="Successfully Inserted";
-				}	
-			}
-
-		}
-		
-		print json_encode($result);
-	}
-
-	public function getDetails($id,$op=1)
+	public function getDetails($id=0,$op=0)
 	{
 		$result['status']=0;
 		$result['message']="No Details Found";
+		if($id==0)
+			$id=$this->getCurrentMid();
 		$array['mid']=$id;
 		$query=$this->db->get_where('mess',$array);
 		$temp=$query->row_array();
-		$query=$this->db->query('select name, phone from users where id in (select id from sec where mid='.$array['mid'].')');
-		$temp['sec']=$query->result();
 		if($temp)
 		{
-			$result['status']=1;
-			$result['message']=$temp;
+			$query=$this->db->query('select name,branch, phone from users where id in (select id from sec where mid='.$array['mid'].')');
+			$temp['sec']=$query->result();
+			if($temp)
+			{
+				$result['status']=1;
+				$result['message']=$temp;
+			}
 		}
-		if($op==1)
+		if($op==0)
 			print json_encode($result);
 		else
 			return $result;
 	}
 
-	public function getDetailsCurrent()
+	public function getCurrentMid($buffer=5)
 	{
-		$this->getDetails($this->getCurrentMid());
-
-	}
-
-	public function getCurrentMid()
-	{
-		$temp=$this->getCurrentMess();
-		return($temp['mid']);	
+		$query=$this->db->query('select * from mess where start=(select max(start) from mess)');
+		$temp=$query->row_array();
+		if($temp)
+		{
+			$today=date('Y-m-d');
+			if(date('Y-m-d',strtotime($today.' -'.$buffer.' days'))>date('Y-m-d',strtotime($temp['start'].' +'.$temp['no_of_days'].' days')))
+				return 0;
+			return($temp['mid']);	
+		}
+		return 0;
 	}
 
 	public function getStartDate()
 	{	
-		$temp=$this->getCurrentMess();
+		$temp=$this->getMessDetails();
 		return($temp['start']);	
 	}
 
 	public function getNod()
 	{	
-		$temp=$this->getCurrentMess();
+		$temp=$this->getMessDetails();
 		return($temp['no_of_days']);	
 	}
 
-	public function getCurrentMess()
+	public function getMessDetails($mid=0)
 	{
-		$query=$this->db->query('select * from mess where start = (select max(start) from mess)');
-		$temp=$query->row_array();
+		if($mid==0)
+		{
+			$query=$this->db->query('select max(start) as start from mess');
+			$temp=$query->row_array();
+			if($temp)
+				$start=$temp['start'];
+			$query=$this->db->query('select * from mess where start = "'.$start.'"');
+			$temp=$query->row_array();
+		}
+		else
+		{
+			$query=$this->db->query('select * from mess where mid = '.$mid);
+			$temp=$query->row_array();
+
+		}
 		return($temp);	
 	}
-
-	public function addMessSec()
-	{
-		$result['status']=0;
-		$result['message']="Permission Denied";
-		$user = new User();
-		$id=$this->input->get_post('id');
-		if($user->isMD($id))
-		{
-			
-			$flag=1;
-			$result['status']=0;
-			$result['message']="Could Not Add";
-			$sec=$this->input->get_post('sec[]');
-			foreach($sec as $toInsert['id'])
-			{
-				$toInsert['mid']=$this->getCurrentMid();
-				if(!$this->db->insert('sec',$toInsert))
-					$flag=0;
-			}
-			if($flag)
-			{
-				$result['status']=1;
-				$result['message']="Successfully Inserted";
-			}
-		}
-
-		print json_encode($result);
-	}
-
 
 }

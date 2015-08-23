@@ -38,8 +38,8 @@
                 </span>
             </div>
         </div>
-        <div class="card stable-bg list padding">
-            <h4>Mess Costs</h4>
+        <div ng-click="showEditMessForm()" class="card stable-bg list padding">
+            <h4><i ng-show="profile.level>2" class="icon ion-edit"></i>Mess Costs</h4>
             <span class="item">
                 Establishment Fee : {{details.establishment}} Rs
             </span>

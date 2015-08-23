@@ -345,7 +345,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
 
 })
 
-.controller('DashBoardCtrl', function($scope, $ionicLoading, $rootScope, $ionicPopup, $localstorage, mess, user, $window) {
+.controller('DashBoardCtrl', function($scope, $ionicLoading, $rootScope, $ionicPopup, $ionicPopover, $localstorage, mess, user, $window) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -370,6 +370,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 if (data.status == 1) {
                     console.log(data.message);
                     $scope.details = data.message;
+                    $scope.details.establishment = parseInt($scope.details.establishment);
+                    $scope.details.cost_per_day = parseInt($scope.details.cost_per_day);
                 }
             }).error(function(err) {
                 $ionicLoading.hide();
@@ -417,6 +419,51 @@ angular.module('Mess.controllers', ['Mess.factories'])
     }
     $scope.getCostDetails();
 
+    $scope.editMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/editMessForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.editMessPopover = popover;
+    });
+
+    $scope.showEditMessForm = function() {
+        if ($scope.profile.level > 2)
+            $scope.editMessPopover.show();
+    }
+
+    $scope.editMess = function() {
+        var dummy = {
+            'id': $scope.profile.id,
+            'establishment': $scope.details.establishment,
+            'cost_per_day': $scope.details.cost_per_day
+        };
+
+        $ionicLoading.show();
+        admin.editMess(dummy, $scope.details.mid)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.getMessCost();
+                } else {
+                    // $ionicLoading.hide();
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                $scope.editMessPopover.hide();
+                $ionicLoading.hide();
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $scope.editMessPopover.hide();
+                $ionicLoading.hide();
+            });
+    }
+
+
     ionic.material.ink.displayEffect();
 })
 
@@ -445,6 +492,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     }).then(function(popover) {
         $scope.editMessPopover = popover;
     });
+
 
     var today = new Date();
     var tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
@@ -482,29 +530,6 @@ angular.module('Mess.controllers', ['Mess.factories'])
     }
     $scope.getDetailsCurrent(tomorrow);
     $scope.getDetailsCurrent(today);
-
-    $scope.getMessCost = function() {
-        $ionicLoading.show();
-        mess.getDetailsCurrent()
-            .success(function(data) {
-                if (data.status == 1) {
-                    console.log(data.message);
-                    $scope.details = data.message;
-                    $scope.details.establishment = parseInt($scope.details.establishment);
-                    $scope.details.cost_per_day = parseInt($scope.details.cost_per_day);
-
-                }
-            }).error(function(err) {
-                $ionicLoading.hide();
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Error',
-                    template: 'Connection Error'
-                });
-            }).then(function() {
-                $ionicLoading.hide();
-            });
-    }
-    $scope.getMessCost();
 
     $scope.stateExists = function(list, status) {
         var a = 0;
@@ -591,7 +616,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
         };
 
         $ionicLoading.show();
-        admin.editMess(dummy,$scope.details.mid)
+        admin.editMess(dummy, $scope.details.mid)
             .success(function(data) {
                 console.log(data);
                 if (data.status == 1) {

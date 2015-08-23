@@ -1,0 +1,19 @@
+<form name="editMessForm">
+    <div class="list card vertical_center">
+        <!-- Establishment Fee -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">Establishment Fee</span>
+            <input required type="number" ng-model="details.establishment" placeholder="Establishment Fee">
+        </label>
+        <!-- Cost Per Day -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">Cost Per Day</span>
+            <input required type="number" ng-model="details.cost_per_day" placeholder="Cost Per Day">
+        </label>
+        <!-- Buttons -->
+        <span class="item button-bar">
+            <!-- Login -->
+            <button ng-click="editMess(details)" ng-disabled="editMessForm.$invalid" class="button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">Submit</button>
+        </span>
+    </div>
+</form>

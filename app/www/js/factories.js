@@ -113,6 +113,11 @@ angular.module('Mess.factories', [])
             if(status==undefined)
                 status="";
             return generic.generic(admin + 'changeStatus/'+status, data);
+        },
+        editMess: function(data,mid) {
+            if(mid==undefined)
+                mid="";
+            return generic.generic(admin + 'editMess/'+mid, data);
         }
     }
 })

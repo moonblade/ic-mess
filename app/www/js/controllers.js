@@ -420,7 +420,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('AdminCtrl', function($scope, $localstorage, $ionicPopup, $ionicLoading, admin, $ionicPopover) {
+.controller('AdminCtrl', function($scope, $localstorage, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -431,14 +431,20 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.nodata = false;
     $scope.profile = $localstorage.getObject('profile');
     $scope.tomorrowCount = 0;
-    $scope.pendingList = {};
-
+    $scope.personList = {};
+    $scope.details = {};
     $scope.expandPendingCard = false;
     $scope.showPendingCard = false;
     $scope.expandAcceptedCard = false;
     $scope.showAcceptedCard = false;
     $scope.expandBarredCard = false;
     $scope.showBarredCard = false;
+
+    $scope.editMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/editMessForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.editMessPopover = popover;
+    });
 
     var today = new Date();
     var tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
@@ -477,11 +483,34 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.getDetailsCurrent(tomorrow);
     $scope.getDetailsCurrent(today);
 
-    $scope.stateExists = function(list,status) {
+    $scope.getMessCost = function() {
+        $ionicLoading.show();
+        mess.getDetailsCurrent()
+            .success(function(data) {
+                if (data.status == 1) {
+                    console.log(data.message);
+                    $scope.details = data.message;
+                    $scope.details.establishment = parseInt($scope.details.establishment);
+                    $scope.details.cost_per_day = parseInt($scope.details.cost_per_day);
+
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+            });
+    }
+    $scope.getMessCost();
+
+    $scope.stateExists = function(list, status) {
         var a = 0;
         list.forEach(function(person) {
             if (person.status == status) {
-                a = a+1;
+                a = a + 1;
             }
         });
         return (a);
@@ -498,11 +527,11 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 if (data.status == 1) {
                     $scope.personList = data.message;
                     var tempCount;
-                    if ($scope.stateExists($scope.personList,0))
+                    if ($scope.stateExists($scope.personList, 0))
                         $scope.showPendingCard = true;
-                    if ($scope.stateExists($scope.personList,1))
+                    if ($scope.stateExists($scope.personList, 1))
                         $scope.showAcceptedCard = true;
-                    if ($scope.stateExists($scope.personList,2))
+                    if ($scope.stateExists($scope.personList, 2))
                         $scope.showBarredCard = true;
                 }
             }).error(function(err) {
@@ -516,9 +545,9 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.getPending();
 
     $scope.changeStatus = function(id, name, status) {
-        var question='Accept ' + name + '?';
-        if(status==2)
-            var question='Bar ' + name + '?';
+        var question = 'Accept ' + name + '?';
+        if (status == 2)
+            var question = 'Bar ' + name + '?';
         var confirm = $ionicPopup.confirm({
             title: 'Confirm',
             template: question
@@ -529,7 +558,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                     'id': $scope.profile.id,
                     'acceptId': id
                 }
-                admin.changeStatus(dummy,status)
+                admin.changeStatus(dummy, status)
                     .success(function(data) {
                         console.log(data);
                         if (data.status == 1) {
@@ -548,5 +577,42 @@ angular.module('Mess.controllers', ['Mess.factories'])
                     });
             }
         });
+    }
+
+    $scope.showEditMessForm = function() {
+        $scope.editMessPopover.show();
+    }
+
+    $scope.editMess = function() {
+        var dummy = {
+            'id': $scope.profile.id,
+            'establishment': $scope.details.establishment,
+            'cost_per_day': $scope.details.cost_per_day
+        };
+
+        $ionicLoading.show();
+        admin.editMess(dummy,$scope.details.mid)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.getMessCost();
+                } else {
+                    // $ionicLoading.hide();
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                $scope.editMessPopover.hide();
+                $ionicLoading.hide();
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $scope.editMessPopover.hide();
+                $ionicLoading.hide();
+            });
     }
 });

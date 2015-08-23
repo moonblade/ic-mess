@@ -119,6 +119,7 @@ class Admin extends CI_Controller {
    		print json_encode($result);
 	}
 
+// MD functions
 	public function newMess($nod=30)
 	{
 		$result['status']=0;
@@ -134,14 +135,17 @@ class Admin extends CI_Controller {
 			$today=date("Y-m-d");
 			$buffer='5';
 			$row['start']=$request['start'];
-			$current=$this->getMessDetails();
-			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days'))
-				|| date($row['start'])>date('Y-m-d',strtotime($today.' +'.$buffer.' days')))
-				{
-				$result['message']="Date Error";
+			$current=$mess->getMessDetails();
+			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days')))
+			{
+				$result['message']="Previous Mess is Still going on";
+			}
+			else if(date($row['start'])>date('Y-m-d',strtotime($today.' +'.$buffer.' days')))
+			{
+				$result['message']="Date too far away";
 			}
 			else{
-				$result['message']="Some Error Occured";
+				$result['message']="Database Error";
 				$row['no_of_days']=$nod;
 				if($this->db->insert('mess', $row))
 				{
@@ -156,23 +160,44 @@ class Admin extends CI_Controller {
 	}
 
 
-
-// MD functions
+	public function editMess($mid=0)
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user = new User();
+		$mess = new Mess();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			if($mid==0)
+				$mid=$mess->getCurrentMid();
+			$array['establishment']=$request['establishment'];
+			$array['cost_per_day']=$request['cost_per_day'];
+			$this->db->where('mid',$mid);
+		    $this->db->update('mess',$array);
+	   		$result['status']=1;
+		    $result['message']="Successfully Updated";	
+		}
+		print json_encode($result);
+	}
 
 	public function addMessSec()
 	{
 		$result['status']=0;
 		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
 		$user = new User();
 		$mess = new Mess();
-		$id=$this->input->get_post('id');
+		$id=$request['id'];
 		if($user->isMD($id))
 		{
-			
 			$flag=1;
 			$result['status']=0;
-			$result['message']="Could Not Add";
-			$sec=$this->input->get_post('sec[]');
+			$result['message']="Database Error";
+			$sec=$request['sec[]'];
 			foreach($sec as $toInsert['id'])
 			{
 				$toInsert['mid']=$mess->getCurrentMid();

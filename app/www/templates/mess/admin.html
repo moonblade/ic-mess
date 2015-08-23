@@ -20,11 +20,19 @@
                 </span>
             </div>
         </div>
+        <div ng-click="showEditMessForm()" class="card stable-bg list padding" ng-show="profile.level>2">
+            <h4><i class="icon ion-edit"></i>Mess Costs</h4>
+            <span class="item">
+                Establishment Fee : {{details.establishment}} Rs
+            </span>
+            <span class="item">
+                Per Day Cost : {{details.cost_per_day}} Rs
+            </span>
+        </div>
         <div class="card stable-bg list padding" ng-show="showPendingCard">
             <div ng-click="expandPendingCard=!expandPendingCard">
                 <div style="float: left;">
                     <h4>Pending List</h4>
-                    <!-- <h4>Pending List ({{count[0]}})</h4> -->
                 </div>
                 <div style="float: right;">
                     <h4><i class="icon ion-arrow-down-b" ng-if="!expandPendingCard"></i><i class="icon ion-arrow-up-b" ng-if="expandPendingCard"></i></h4>
@@ -42,7 +50,6 @@
             <div ng-click="expandAcceptedCard=!expandAcceptedCard">
                 <div style="float: left;">
                     <h4>Accepted List</h4>
-                    <!-- <h4>Accepted List ({{count[1]}})</h4> -->
                 </div>
                 <div style="float: right;">
                     <h4><i class="icon ion-arrow-down-b" ng-if="!expandAcceptedCard"></i><i class="icon ion-arrow-up-b" ng-if="expandAcceptedCard"></i></h4>
@@ -60,7 +67,6 @@
             <div ng-click="expandBarredCard=!expandBarredCard">
                 <div style="float: left;">
                     <h4>Barred List</h4>
-                    <!-- <h4>Barred List ({{count[2]}})</h4> -->
                 </div>
                 <div style="float: right;">
                     <h4><i class="icon ion-arrow-down-b" ng-if="!expandBarredCard"></i><i class="icon ion-arrow-up-b" ng-if="expandBarredCard"></i></h4>

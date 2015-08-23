@@ -74,7 +74,7 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
                     controller: 'DashBoardCtrl'
                 },
                 'fabContent': {
-                    template: '<button ng-if="fabShown" id="fab-add-mess" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
+                    template: '',
                     controller: 'DashBoardCtrl'
                 }
             }
@@ -88,7 +88,7 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
                     controller: 'AdminCtrl'
                 },
                 'fabContent': {
-                    template: '<button ng-if="fabShown" id="fab-add-mess" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
+                    template: '',
                     controller: 'AdminCtrl'
                 }
             }

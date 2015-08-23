@@ -17,38 +17,17 @@ angular.module('Mess.factories', [])
     }
 }])
 
-.factory('user', function($http, appConfig) {
+.factory('user', function($http, appConfig,generic) {
     var user = appConfig.serverUrl + 'user/';
     return {
-        login: function(loginData) {
-            return $http({
-                method: 'POST',
-                url: user + 'login/',
-                data: loginData,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+        login: function(data) {
+            return generic.generic(user+'login/',data);
         },
-        register: function(registerData) {
-            return $http({
-                method: 'POST',
-                url: user + 'register/',
-                data: registerData,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+        register: function(data) {
+            return generic.generic(user+'register/',data);
         },
         getCostDetails: function(data) {
-            return $http({
-                method: 'POST',
-                url: user + 'getCostDetails/',
-                data: data,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+            return generic.generic(user+'getCostDetails/',data);
         }
     }
 })
@@ -56,37 +35,14 @@ angular.module('Mess.factories', [])
 .factory('attendance', function($http, appConfig, generic) {
     var attendance = appConfig.serverUrl + 'attendance/'
     return {
-        view: function(id) {
-            return $http({
-                method: 'POST',
-                url: attendance + 'view/',
-                data: {
-                    'id': id
-                },
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+        view: function(data) {
+            return generic.generic(attendance+'view/',data);
         },
         setAbsent: function(data) {
-            return $http({
-                method: 'POST',
-                url: attendance + 'setAbsent/',
-                data: data,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+            return generic.generic(attendance+'setAbsent/',data);
         },
         setPresent: function(data) {
-            return $http({
-                method: 'POST',
-                url: attendance + 'setPresent/',
-                data: data,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+            return generic.generic(attendance+'setPresent/',data);
         }
     }
 })
@@ -118,6 +74,11 @@ angular.module('Mess.factories', [])
             if(mid==undefined)
                 mid="";
             return generic.generic(admin + 'editMess/'+mid, data);
+        },
+        createMess: function(data, nod) {
+            if(nod==undefined)
+                nod="";
+            return generic.generic(admin + 'createMess/'+nod, data)
         }
     }
 })

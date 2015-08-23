@@ -28,8 +28,8 @@
                 Duration : {{details.no_of_days}} Days
             </span>
         </div>
-        <div class="card stable-bg list padding">
-            <h4>Mess Sec</h4>
+        <div ng-click="addMessSec()" class="card stable-bg list padding">
+            <h4><i ng-show="profile.level>2" class="icon ion-edit"></i>Mess Sec</h4>
             <div ng-repeat="sec in details.sec">
                 <span class="item">
                     <button ng-click="call(sec.phone)" class="button icon-left ion-ios-telephone button-balanced ink">

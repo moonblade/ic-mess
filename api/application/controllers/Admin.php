@@ -43,6 +43,7 @@ class Admin extends CI_Controller {
 		}			
 		else if(date($array['date'])>date('Y-m-d',strtotime($currentMess['start'].' +'.$currentMess['no_of_days'].' days')))
 		{
+			$result['status']=2;
 			$result['message']="Mess complete. Create new mess.";
 		}
 		else{
@@ -120,7 +121,7 @@ class Admin extends CI_Controller {
 	}
 
 // MD functions
-	public function newMess($nod=30)
+	public function createMess($nod=30)
 	{
 		$result['status']=0;
 		$result['message']="Permission Denied";
@@ -138,7 +139,7 @@ class Admin extends CI_Controller {
 			$current=$mess->getMessDetails();
 			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days')))
 			{
-				$result['message']="Previous Mess is Still going on";
+				$result['message']="Date intersects current mess";
 			}
 			else if(date($row['start'])>date('Y-m-d',strtotime($today.' +'.$buffer.' days')))
 			{

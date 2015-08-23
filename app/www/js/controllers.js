@@ -233,7 +233,10 @@ angular.module('Mess.controllers', ['Mess.factories'])
     console.log($scope.profile);
     $scope.view = function() {
         $ionicLoading.show();
-        attendance.view($scope.profile.id)
+        var dummy={
+            'id':$scope.profile.id
+        }
+        attendance.view(dummy)
             .success(function(data) {
                 console.log(data);
                 if (data.status == 1) {
@@ -353,7 +356,6 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.$parent.setHeaderFab(false);
     $scope.details = {};
     $scope.costDetails = {};
-    $scope.fabShown = false;
     $scope.nodata = false;
     $scope.profile = $localstorage.getObject('profile');
 
@@ -402,8 +404,6 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 if (data.status == 1) {
                     $scope.costDetails = data.message;
                 } else {
-                    if (data.status == 2)
-                        $scope.fabShown = true;
                     $scope.nodata = true;
                     $scope.message = data.message;
                 }
@@ -474,7 +474,6 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.$parent.setExpanded(false);
     $scope.$parent.setHeaderFab(false);
     $scope.countDate = [];
-    $scope.fabShown = false;
     $scope.nodata = false;
     $scope.profile = $localstorage.getObject('profile');
     $scope.tomorrowCount = 0;
@@ -486,11 +485,14 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.showAcceptedCard = false;
     $scope.expandBarredCard = false;
     $scope.showBarredCard = false;
+    $scope.createMessDetails = {};
+        
+    // ionic.material.ink.displayEffect();
 
-    $scope.editMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/editMessForm.html', {
+    $scope.createMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/createMessForm.html', {
         scope: $scope
     }).then(function(popover) {
-        $scope.editMessPopover = popover;
+        $scope.createMessPopover = popover;
     });
 
 
@@ -604,39 +606,44 @@ angular.module('Mess.controllers', ['Mess.factories'])
         });
     }
 
-    $scope.showEditMessForm = function() {
-        $scope.editMessPopover.show();
+    $scope.showCreateMessForm = function() {
+        $scope.createMessDetails.start = new Date();
+        $scope.createMessDetails.no_of_days = 30;
+        console.log($scope.createMessDetails);
+        if($scope.profile.level > 2)
+            $scope.createMessPopover.show();
     }
 
-    $scope.editMess = function() {
+    $scope.createMess = function() {
         var dummy = {
             'id': $scope.profile.id,
-            'establishment': $scope.details.establishment,
-            'cost_per_day': $scope.details.cost_per_day
+            'start': $scope.createMessDetails.start
         };
 
         $ionicLoading.show();
-        admin.editMess(dummy, $scope.details.mid)
+        admin.createMess(dummy,$scope.createMessDetails.no_of_days)
             .success(function(data) {
                 console.log(data);
                 if (data.status == 1) {
-                    $scope.getMessCost();
+                    var alert = $ionicPopup.alert({
+                        title: 'Success',
+                        template : data.message
+                    });
                 } else {
-                    // $ionicLoading.hide();
                     var alert = $ionicPopup.alert({
                         title: 'Error',
                         template: data.message
                     });
                 }
             }).error(function(err) {
-                $scope.editMessPopover.hide();
+                $scope.createMessPopover.hide();
                 $ionicLoading.hide();
                 var alert = $ionicPopup.alert({
                     title: 'Error',
                     template: 'Connection Error'
                 });
             }).then(function() {
-                $scope.editMessPopover.hide();
+                $scope.createMessPopover.hide();
                 $ionicLoading.hide();
             });
     }

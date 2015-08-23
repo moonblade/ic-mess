@@ -1,0 +1,19 @@
+<form name="createMessForm">
+    <div class="list card vertical_center">
+        <!-- Start Date -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">Start Date</span>
+            <input required type="date" ng-model="createMessDetails.startDate" placeholder="Start Date">
+        </label>
+        <!-- No of days -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">No of Days</span>
+            <input required type="number" ng-model="createMessDetails.no_of_days" placeholder="No of Days">
+        </label>
+        <!-- Buttons -->
+        <span class="item button-bar">
+            <!-- Submit -->
+            <button ng-click="createMess()" ng-disabled="createMessForm.$invalid" class="button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">Submit</button>
+        </span>
+    </div>
+</form>

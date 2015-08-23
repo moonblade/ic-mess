@@ -1,24 +1,20 @@
 <ion-view view-title="Admin Panel">
     <ion-content ng-class="{expanded:isExpanded}">
-        <div class="card stable-bg list padding">
+        <div ng-show="!nodata" class="card stable-bg list padding">
             <div style="float: left;">
                 <h4>Present Count</h4>
             </div>
-            <div ng-show="!nodata">
-                <div id="countPresent" style="float: right;">
-                    <h4>{{tomorrowCount}}</h4>
-                </div>
-                <a ng-repeat="day in countDate" class="">
-                    <span class="item">
+            <div id="countPresent" style="float: right;">
+                <h4>{{tomorrowCount}}</h4>
+            </div>
+            <a ng-repeat="day in countDate" class="">
+                <span class="item">
                     {{day.relative}} ({{day.String}}) : {{day.count}}
                 </span>
-                </a>
-            </div>
-            <div ng-show="nodata">
-                <span class="item">
-                    {{message}}
-                </span>
-            </div>
+            </a>
+        </div>
+        <div ng-show="nodata && profile.level>2" ng-click="showCreateMessForm()" class="card button ink">
+            <h4>Create New Mess</h4>
         </div>
         <div class="card stable-bg list padding" ng-show="showPendingCard">
             <div ng-click="expandPendingCard=!expandPendingCard">
@@ -30,11 +26,11 @@
                 </div>
             </div>
             <div ng-show="expandPendingCard">
-                    <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
-                        <span ng-show="person.status==0" class="item">
+                <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
+                    <span ng-show="person.status==0" class="item">
                     <h3>{{person.name}} ({{person.branch}})</h3>
                     </span>
-                    </a>
+                </a>
             </div>
         </div>
         <div class="card stable-bg list padding" ng-show="showAcceptedCard">
@@ -47,11 +43,11 @@
                 </div>
             </div>
             <div ng-show="expandAcceptedCard">
-                    <a ng-click="changeStatus(person.id,person.name,2)" ng-repeat="person in personList" class="">
-                        <span ng-show="person.status==1" class="item">
+                <a ng-click="changeStatus(person.id,person.name,2)" ng-repeat="person in personList" class="">
+                    <span ng-show="person.status==1" class="item">
                     <h3>{{person.name}} ({{person.branch}})</h3>
                     </span>
-                    </a>
+                </a>
             </div>
         </div>
         <div class="card stable-bg list padding" ng-show="showBarredCard">
@@ -64,11 +60,11 @@
                 </div>
             </div>
             <div ng-show="expandBarredCard">
-                    <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
-                        <span ng-show="person.status==2" class="item">
+                <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
+                    <span ng-show="person.status==2" class="item">
                     <h3>{{person.name}} ({{person.branch}})</h3>
                     </span>
-                    </a>
+                </a>
             </div>
         </div>
     </ion-content>

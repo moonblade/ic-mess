@@ -184,6 +184,44 @@ class Admin extends CI_Controller {
 		print json_encode($result);
 	}
 
+	public function getNamesForSec()
+	{
+		$result['status']=0;
+		$result['message']="Database Error";
+		$mess = new Mess();
+		$mid=$mess->getCurrentMid();
+		$query=$this->db->query('select id, name, branch from users where id not in (select id from sec where mid='.$mid.') order by name, branch');
+		$temp=$query->result();
+		if($temp)
+		{
+			$result['status']=1;
+			$result['message']=$temp;
+		}
+		print json_encode($result);
+	}
+
+	public function removeMessSec()
+	{
+		$result['status']=0;
+		$result['message']='Permission Denied';
+		$postdata = file_get_contents("php://input");
+		$request = json_decode($postdata, true);
+		$user = new User();
+		$mess = new Mess();
+		$id=$request['id'];
+		if($user->isMD($id)){
+			$result['message']='Database Error';
+			$array['id']=$request['sec'];
+			$array['mid']=$mess->getCurrentMid();
+			if($this->db->delete('sec', $array))
+			{
+				$result['status']=1;
+				$result['message']='Successfully done';
+			}
+		}
+		print json_encode($result);
+	}
+
 	public function addMessSec()
 	{
 		$result['status']=0;

@@ -24,7 +24,7 @@ class Mess extends CI_Controller {
 		$temp=$query->row_array();
 		if($temp)
 		{
-			$query=$this->db->query('select name,branch, phone from users where id in (select id from sec where mid='.$array['mid'].')');
+			$query=$this->db->query('select id,name,branch, phone from users where id in (select id from sec where mid='.$array['mid'].')');
 			$temp['sec']=$query->result();
 			if($temp)
 			{

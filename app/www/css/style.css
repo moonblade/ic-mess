@@ -245,3 +245,9 @@ body div.popup-container.popup-showing.active div div.popup-body
 {
   overflow: hidden;
 }
+
+#secList
+{
+  max-height: 40vh;
+  overflow: scroll;
+}

@@ -1,20 +1,25 @@
 <ion-view view-title="Admin Panel">
     <ion-content ng-class="{expanded:isExpanded}">
-        <div ng-show="!nodata" class="card stable-bg list padding">
+        <div class="card stable-bg list padding">
             <div style="float: left;">
                 <h4>Present Count</h4>
             </div>
-            <div id="countPresent" style="float: right;">
-                <h4>{{tomorrowCount}}</h4>
-            </div>
-            <a ng-repeat="day in countDate" class="">
-                <span class="item">
+            <div ng-show="!nodata">
+                <div id="countPresent" style="float: right;">
+                    <h4>{{tomorrowCount}}</h4>
+                </div>
+                <a ng-repeat="day in countDate" class="">
+                    <span class="item">
                     {{day.relative}} ({{day.String}}) : {{day.count}}
                 </span>
-            </a>
+                </a>
+            </div>
+            <div ng-show="nodata">
+                <span class="item">{{message}}</span>
+            </div>
         </div>
-        <div ng-show="nodata && profile.level>2" ng-click="showCreateMessForm()" class="card button ink">
-            <h4>Create New Mess</h4>
+        <div class="card stable-bg list padding" ng-show="!(showPendingCard || showAcceptedCard || showBarredCard)" ng-click="getPending()">
+            <h4>Show Student List</h4>
         </div>
         <div class="card stable-bg list padding" ng-show="showPendingCard">
             <div ng-click="expandPendingCard=!expandPendingCard">

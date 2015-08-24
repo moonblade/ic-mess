@@ -10,20 +10,17 @@ class Attendance extends CI_Controller {
 		print "Attendance functions";
 	}
 
-	public function __construct()
+	public function __construct($id=0)
 	{
 		parent::__construct();
 		$result['status']=0;
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);	
-		$id=$request['id'];
+	    if($id==0)
+			$id=$request['id'];
 		$user=new User();
 		$isInCurrentMess=$user->isInCurrentMess($id);
-		if($user->isSec($id) || $user->isMD($id))
-		{
-
-		}
-		else if($isInCurrentMess==null)
+		if($isInCurrentMess==null)
 		{
 			$result['status']=2;
 			$result['message']="You haven't enrolled in the current mess yet";
@@ -37,7 +34,7 @@ class Attendance extends CI_Controller {
 			print json_encode($result);
 			exit();
 		}
-		else if($isInCurrentMess==-1)
+		else if($isInCurrentMess==2)
 		{
 			$result['status']=4;
 			$result['message']="You have been barred from the mess (Mess Out)";
@@ -46,18 +43,22 @@ class Attendance extends CI_Controller {
 		}
 	}
 	
-	public function view()
+	public function view($id=0,$currentMid=0,$op=0)
 	{
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);
 			
 		$mess=new Mess();
-		$array['id']=$request['id'];
+		if($id==0)
+			$array['id']=$request['id'];
+		else
+			$array['id']=$id;
+
 
 		$result['status']=0;
 		$result['message']="Could not find any Entry";
-
-		$currentMid=$mess->getCurrentMid(0);
+		if($currentMid==0)
+			$currentMid=$mess->getCurrentMid(0);
 		if($currentMid!=0)
 		{
 			$currentMess=$mess->getMessDetails($currentMid);
@@ -77,7 +78,9 @@ class Attendance extends CI_Controller {
 			$result['status']=1;
 			$result['message']=$days;
 		}
-		print json_encode($result);
+		if($op==0)
+			print json_encode($result);
+		return $result;
 
 	}
 
@@ -188,22 +191,15 @@ class Attendance extends CI_Controller {
 	public function getCount()
 	{
 		$result['status']=1;
-		if($temp=$this->enrolled())
+		$mess=new Mess();
+		if($temp=$mess->enrolled())
 			$result['message']=$temp;
 		else
 			$result['message']=0;
 		print json_encode($result);
 	}
 
-	public function enrolled()
-	{
-		$mess=new Mess();
-		$mid=$mess->getCurrentMid();
-		$query=$this->db->query("select count(id) as count from inmate where mid=$mid and status=1");
-		$temp=$query->row_array();
-		return $temp['count'];
-	}
-	
+
 }
 
 /* End of file Attendance.php */

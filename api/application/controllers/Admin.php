@@ -47,9 +47,9 @@ class Admin extends CI_Controller {
 			$result['message']="Mess complete. Create new mess.";
 		}
 		else{
-			$attendance = new Attendance();
+			$mess = new Mess();
 			$result['status']=1;
-			if($temp=$attendance->enrolled())
+			if($temp=$mess->enrolled())
 			{	
 				$query=$this->db->query("select count(id) as count from attendance where date='".$array['date']."'");
 				$tempRes=$query->row_array();
@@ -104,8 +104,7 @@ class Admin extends CI_Controller {
 	    $request = json_decode($postdata, true);
 
 	    $result['status']=0;
-	    $result['message']=$status;
-	    // $result['message']="None Found";
+	    $result['message']="None Found";
 	    $mess=new Mess();
 	    if($mid==0)
 	    	$mid=$mess->getCurrentMid();
@@ -139,7 +138,7 @@ class Admin extends CI_Controller {
 			$current=$mess->getMessDetails();
 			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days')))
 			{
-				$result['message']="Date intersects current mess";
+				$result['message']="Date clashes with current mess";
 			}
 			else if(date($row['start'])>date('Y-m-d',strtotime($today.' +'.$buffer.' days')))
 			{
@@ -254,4 +253,52 @@ class Admin extends CI_Controller {
 		print json_encode($result);
 	}
 
+	public function getAllCost($mid=0)
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user = new User();
+		$mess = new Mess();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			$flag=1;
+			$result['status']=0;
+			$result['message']="Database Error";
+			if($mid==0)
+				$mid=$mess->getCurrentMid();
+			$query=$this->db->query('select id from inmate where mid='.$mid.' and status=1');
+			$temp=$query->result();
+			if($temp)
+			{
+				$result['status']=1;
+				foreach($temp as $person)
+				{
+					$id=$person->id;
+					$array['id']=$id;
+					$this->db->select('name, branch');
+					$query=$this->db->get_where('users',$array);
+					$row=$query->row_array();
+					if($row)
+					{
+						$person->name=$row['name'];
+						$person->branch=$row['branch'];
+					}
+					$attendance=new Attendance($id);
+					$currentMess=$mess->getMessDetails();
+					$nod=$attendance->nodPresent($id,$mid);
+					$days=$attendance->view($id,$mid,1);
+					if($days['status']==1)
+						$person->daysPresent=$days['message'];
+					$person->nodPresent=$nod;
+					$person->cost=$currentMess['establishment']+$person->nodPresent*$currentMess['cost_per_day'];
+				}
+				$result['status']=1;
+				$result['message']=$temp;
+			}
+		}
+		print json_encode($result);
+	}
 }

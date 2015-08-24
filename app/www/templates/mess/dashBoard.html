@@ -4,7 +4,7 @@
             <h4>Attendence and Cost</h4>
             <div ng-show="!nodata">
                 <span class="item">
-                Days Present : {{costDetails.daysPresent}}
+                Days Present : {{costDetails.daysPresent}} Days
                 </span>
                 <span class="item">
                 Total Cost : {{costDetails.cost}} Rs
@@ -32,15 +32,16 @@
             <h4 ng-click="showAddSecPopover()"><i ng-show="profile.level>2" class="icon ion-edit"></i> Mess Sec</h4>
             <div ng-repeat="sec in details.sec">
                 <span class="item">
-                <div class="item item-button-right">
-                    <i class="icon ion-edit" ng-click="deleteSec(sec.id, sec.name)"> {{sec.name}}  ({{sec.branch}})</i>
+                <div class="item item-button-right item-icon-left">
+                    <div ng-click="deleteSec(sec.id, sec.name)">
+                        <i class="ion-edit" ng-show="profile.level>2"></i> {{sec.name}}  ({{sec.branch}})
+                    </div>
                     <button class="button button-balanced ink" ng-click="call(sec.phone)">
                         <i class="icon ion-ios-telephone"></i>
                     </button>
-                    <!-- <span ng-if="profile.level>2" class="icon ion-edit"></span> -->
-                </div>
-                </span>
             </div>
+            </span>
+        </div>
         </div>
         <div ng-click="showEditMessForm()" class="card stable-bg list padding">
             <h4><i ng-show="profile.level>2" class="icon ion-edit"></i> Mess Costs</h4>

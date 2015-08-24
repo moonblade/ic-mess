@@ -123,13 +123,11 @@ class User extends CI_Controller {
 		return($result);
 	}
 
-	public function isInMess($id,$mid,$status=1,$op=0)
+	public function isInMess($id,$mid,$op=0)
 	{
 		$mess=new Mess();
 		$array['id']=$id;
 		$array['mid']=$mid;
-		$array['status']=$status;
-		$result['status']=1;
 		$query=$this->db->get_where('inmate',$array);
 		$temp=$query->row_array();
 		$result['message']=$temp['status'];
@@ -174,4 +172,23 @@ class User extends CI_Controller {
 				return 1;
 			return 0;
 	}
+
+
+	public function enroll($id)
+	{
+		$result['status']=0;
+		$result['message']='Database Error';
+		$mess = new Mess();
+		$array['id']=$id;
+		$array['mid']=$mess->getCurrentMid();
+		if($this->db->insert('inmate',$array))
+		{
+			$result['status']=1;
+			$result['message']='Successfully Enrolled';
+		}
+
+		print json_encode($result);
+
+	}
+	
 }

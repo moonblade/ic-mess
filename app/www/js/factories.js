@@ -28,6 +28,9 @@ angular.module('Mess.factories', [])
         },
         getCostDetails: function(data) {
             return generic.generic(user + 'getCostDetails/', data);
+        },
+        enroll:function(id) {
+            return generic.generic(user + 'enroll/' +id);
         }
     }
 })

@@ -84,4 +84,11 @@ class Mess extends CI_Controller {
 		return($temp);	
 	}
 
+	public function enrolled()
+	{
+		$mid=$this->getCurrentMid();
+		$query=$this->db->query("select count(id) as count from inmate where mid=$mid and status=1");
+		$temp=$query->row_array();
+		return $temp['count'];
+	}
 }

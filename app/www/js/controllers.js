@@ -618,7 +618,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('AdminCtrl', function($scope, $localstorage, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess) {
+.controller('AdminCtrl', function($scope, $localstorage,$window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -692,6 +692,44 @@ angular.module('Mess.controllers', ['Mess.factories'])
             }
         });
         return (a);
+    }
+
+
+    $scope.getAllCost = function() {
+        $ionicLoading.show();
+        var dummy = {
+            'id': $scope.profile.id
+        };
+        admin.getAllCost(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    var confirm = $ionicPopup.confirm({
+                        title: 'Success',
+                        template: 'Click ok to download'
+                    }).then(function(res) {
+                        if (res) {
+                            var csvLocation = appConfig.serverUrl + data.message;
+                            console.log("goto : " + csvLocation);
+                            $window.open(csvLocation);
+                        }
+                    });
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        templates: data.message
+                    });
+                }
+            }).error(function(err) {
+                console.log(err);
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    templates: data.message
+                });
+
+            }).then(function() {
+                $ionicLoading.hide();
+            });
     }
 
     $scope.getPending = function() {

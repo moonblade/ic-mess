@@ -306,7 +306,34 @@ class Admin extends CI_Controller {
 					$person->cost=$currentMess['establishment']+$person->nodPresent*$currentMess['cost_per_day'];
 				}
 				$result['status']=1;
-				$result['message']=$temp;
+				$temp = json_decode(json_encode($temp),true);
+				$array = $temp;
+				$f = fopen($mid.'.csv', 'w');
+
+				$Keys = false;
+				foreach ($array as $line)
+				{
+				    if (empty($Keys))
+				    {
+				    	$prefix=['id','name','branch'];
+				    	$Keys=array_keys($line['daysPresent']);
+				    	$suffix=['nod','cost'];
+				    	$Keys=array_merge($prefix,$Keys,$suffix);
+				        fputcsv($f, $Keys);
+				        $Keys = array_flip($Keys);
+				    }
+				    $line_array = array($line['id']);
+				    $line_array[]=($line['name']);
+				    $line_array[]=($line['branch']);
+				    foreach ($line['daysPresent'] as $value)
+				    {
+				        $line_array[]=($value);
+				    }
+				    $line_array[]=($line['nodPresent']);
+				    $line_array[]=($line['cost']);
+				    fputcsv($f, $line_array);
+				}
+				$result['message']=$mid.'.csv';
 			}
 		}
 		print json_encode($result);

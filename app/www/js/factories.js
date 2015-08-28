@@ -92,6 +92,9 @@ angular.module('Mess.factories', [])
         getNames: function(data) {
             return generic.generic(admin + 'getNamesForSec/', data);
         },
+        getAllCost: function(data) {
+            return generic.generic(admin + 'getAllCost/', data);
+        },
         addSec: function(data) {
             return generic.generic(admin + 'addMessSec/', data);
         },

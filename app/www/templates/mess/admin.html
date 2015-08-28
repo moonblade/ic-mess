@@ -17,6 +17,11 @@
             <div ng-show="nodata">
                 <span class="item">{{message}}</span>
             </div>
+            <div ng-show="nodata" class="item tabs tabs-secondary tabs-icon-left">
+                <a class="tab-item" ng-click="getAllCost()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-clipboard"></i> Prepare Mess Bill
+                </a>
+            </div>
         </div>
         <div class="card stable-bg list padding" ng-show="!(showPendingCard || showAcceptedCard || showBarredCard)" ng-click="getPending()">
             <h4>Show Student List</h4>

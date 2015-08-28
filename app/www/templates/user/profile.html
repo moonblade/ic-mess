@@ -1,0 +1,95 @@
+<ion-view view-title="Profile">
+    <ion-content ng-class="{expanded:isExpanded}">
+        <div class="card stable-bg list padding">
+            <!-- <h4>Personal Details</h4> -->
+            <div class="item item-avatar">
+                <img src="img/icon.png" style="background: black">
+                <h2>{{profile.name}}</h2>
+                <p>{{profile.phone}}</p>
+            </div>
+        </div>
+        <div class="card stable-bg list padding">
+            <h4>Personal Details</h4>
+            <div ng-show="profile.level>1" class="item">
+                <div class="bold" style="float: left">
+                    Position
+                </div>
+                <div style="float: right">
+                    <div ng-if="profile.level>2">
+                        Current MD
+                    </div>
+                    <div ng-if="profile.level==2">
+                        Current Mess Sec
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="bold" style="float: left">
+                    Email
+                </div>
+                <div style="float: right">
+                    {{profile.email}}
+                </div>
+            </div>
+            <div class="item">
+                <div class="bold" style="float: left">
+                    Date of Birth
+                </div>
+                <div style="float: right">
+                    {{profile.dobString}}
+                </div>
+            </div>
+            <div ng-if="profile.bloodgroup!=null" class="item">
+                <div class="bold" style="float: left">
+                    Blood Group
+                </div>
+                <div style="float: right">
+                    {{profile.bloodgroup}}ve
+                </div>
+            </div>
+            <div ng-if="profile.branch!='Other'" class="item">
+                <div class="bold" style="float: left">
+                    Branch
+                </div>
+                <div style="float: right">
+                    {{profile.branch}}
+                </div>
+            </div>
+
+            <div class="item tabs tabs-secondary tabs-icon-left">
+                <a ng-click="showChangePasswordPopover()" class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-locked"></i> Change Password
+                </a>
+            </div>
+        </div>
+        <div class="card stable-bg list padding">
+            <h4>Home Address</h4>
+            <p>{{profile.address}}</p>
+        </div>
+        <div class="card stable-bg list padding">
+            <h4>Contact Details</h4>
+            <div class="item bold">
+                Father
+            </div>
+            <div class="item">
+                <div style="float: left">
+                    {{profile.father}}
+                </div>
+                <div style="float: right">
+                    {{profile.phonedad}}
+                </div>
+            </div>
+            <div class="item bold">
+                Mother
+            </div>
+            <div class="item">
+                <div style="float: left">
+                    {{profile.mother}}
+                </div>
+                <div style="float: right">
+                    {{profile.phonemom}}
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

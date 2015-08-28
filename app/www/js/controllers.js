@@ -468,6 +468,51 @@ angular.module('Mess.controllers', ['Mess.factories'])
         $scope.addSecPopover = popover;
     });
 
+    $scope.deleteSecPopover = $ionicPopover.fromTemplateUrl('templates/forms/deleteSecForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.deleteSecPopover = popover;
+    });
+
+    $scope.showDeleteSecPopover = function() {
+        $scope.deleteSecPopover.show();
+    }
+
+    $scope.deleteSec = function() {
+        $scope.deleteSecPopover.hide();
+        $ionicLoading.show();
+        $scope.deleteSecData = [];
+        $scope.details.sec.forEach(function(list) {
+            if (list.checked)
+                $scope.deleteSecData.push(list.id);
+        });
+        var dummy = {
+            'id': $scope.profile.id,
+            'sec[]': $scope.deleteSecData
+        }
+        admin.deleteSec(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.getDetailsCurrent();
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.addSecPopover.hide();
+            });
+
+    }
+
     $scope.addSec = function() {
         $ionicLoading.show();
         $scope.addSecData = [];
@@ -531,39 +576,6 @@ angular.module('Mess.controllers', ['Mess.factories'])
             })
     }
 
-    $scope.deleteSec = function(sec, name) {
-        if ($scope.profile.level > 2) {
-            var confirm = $ionicPopup.confirm({
-                title: 'Confirm',
-                template: 'Remove ' + name + '?'
-            }).then(function(res) {
-                if (res) {
-                    $ionicLoading.show();
-                    var dummy = {
-                        'id': $scope.profile.id,
-                        'sec': sec
-                    }
-                    admin.removeMessSec(dummy)
-                        .success(function(data) {
-                            if (data.status == 1) {
-                                $scope.getDetailsCurrent();
-                            } else {
-                                var alert = $ionicPopup.alert({
-                                    title: 'Error',
-                                    template: data.message
-                                });
-                            }
-                        }).error(function(err) {
-                            console.log(err);
-                        }).then(function() {
-                            $ionicLoading.hide();
-                        });
-
-                    console.log(sec);
-                }
-            })
-        }
-    }
     $scope.showEditMessForm = function() {
         if ($scope.profile.level > 2)
             $scope.editMessPopover.show();
@@ -699,10 +711,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
                         $scope.showAcceptedCard = true;
                     if ($scope.stateExists($scope.personList, 2))
                         $scope.showBarredCard = true;
-                }
-                else
-                {
-                    $scope.noStudentExists=true;
+                } else {
+                    $scope.noStudentExists = true;
                 }
             }).error(function(err) {
                 $ionicLoading.hide();
@@ -789,4 +799,105 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 $ionicLoading.hide();
             });
     }
+})
+
+.controller('ProfileCtrl', function($scope, $localstorage, $ionicPopover, $ionicLoading, user, $ionicPopup) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = false;
+    $scope.$parent.setExpanded(false);
+    $scope.$parent.setHeaderFab(false);
+    $scope.user = {};
+    $scope.profile = $localstorage.getObject('profile');
+    $scope.profile.dobString = new Date($scope.profile.dob).toDateString();
+
+    $scope.editProfilePopover = $ionicPopover.fromTemplateUrl('templates/forms/editProfileForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.editProfilePopover = popover;
+    });
+
+    $scope.showEditProfilePopover = function() {
+        $scope.editProfilePopover.show();
+    }
+
+    $scope.changePasswordPopover = $ionicPopover.fromTemplateUrl('templates/forms/changePasswordForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.changePasswordPopover = popover;
+    });
+
+    $scope.showChangePasswordPopover = function() {
+        $scope.changePasswordPopover.show();
+    }
+
+    $scope.changePassword = function() {
+        $scope.changePasswordPopover.hide();
+        $ionicLoading.show();
+        var sendData = {
+            'id': $scope.profile.id,
+            'user': $scope.user
+        };
+        user.changePassword(sendData)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $localstorage.setObject('profile', $scope.profile);
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Success',
+                        template: data.message
+                    });
+                } else {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.changePasswordPopover.hide();
+            });
+    }
+
+    $scope.submit = function() {
+        $scope.editProfilePopover.hide();
+        $ionicLoading.show();
+        var sendData = {
+            'profile': $scope.profile
+        };
+        user.editProfile(sendData)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $localstorage.setObject('profile', $scope.profile);
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Success',
+                        template: data.message
+                    });
+                } else {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.editProfilePopover.hide();
+            });
+    }
+
+    // Set Ink
+    ionic.material.ink.displayEffect();
 });

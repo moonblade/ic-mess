@@ -1,0 +1,57 @@
+<form name="editProfileForm">
+    <div class="list card">
+        <div id="editProfilePopover">
+            <!-- Blood Group -->
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Blood Group
+                </div>
+                <select ng-model="profile.bloodgroup">
+                    <option selected="" value="A+">A+ve</option>
+                    <option value="A-">A-ve</option>
+                    <option value="B+">B+ve</option>
+                    <option value="B-">B-ve</option>
+                    <option value="O+">O+ve</option>
+                    <option value="O-">O-ve</option>
+                    <option value="AB+">AB+ve</option>
+                    <option value="AB-">AB-ve</option>
+                </select>
+            </label>
+            <!-- Mobile -->
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Mobile (personal)</span>
+                <input required type="text" ng-model="profile.phone" placeholder="Mobile (personal)">
+            </label>
+            <!-- Address -->
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Address</span>
+                <input type="text" ng-model="profile.address" placeholder="Address">
+            </label>
+            <!-- Father -->
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Father's Name</span>
+                <input required type="text" ng-model="profile.father" placeholder="Father's Name">
+            </label>
+            <!-- Mother -->
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Mother's Name</span>
+                <input type="text" ng-model="profile.mother" placeholder="Mother's Name">
+            </label>
+            <!-- PhoneDad -->
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Mobile (Father)</span>
+                <input required type="text" ng-model="profile.phonedad" placeholder="Mobile (Father)">
+            </label>
+            <!-- PhoneMom -->
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Mobile (Mother)</span>
+                <input type="text" ng-model="profile.phonemom" placeholder="Mobile (Mother)">
+            </label>
+        </div>
+            <!-- Submit -->
+            <button ng-click="submit()" ng-disabled="editProfileForm.$invalid" class="item button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">
+                Submit
+            </button>
+            <!-- </div> -->
+    </div>
+</form>

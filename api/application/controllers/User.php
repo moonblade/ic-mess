@@ -60,38 +60,50 @@ class User extends CI_Controller {
 	public function changePassword()
 	{
 		$postdata = file_get_contents("php://input");
-	    $request = json_decode($postdata);
+	    $request = json_decode($postdata,true);
 
-		$id=$this->input->get_post('id');
-		$row['email']=$this->input->get_post('email');
-		$newrow['email']=$this->input->get_post('email');
-		$row['pass']=md5($this->input->get_post('pass'));
-		$newrow['pass']=md5($this->input->get_post('newpass'));
+		$array['id']=$request['id'];
+		$user=$request['user'];
+		$array['pass']=md5($user['pass']);
+		$newrow['pass']=md5($user['newpass']);
 		
 		$result['status']=0;
-		$result['message']="Invalid Username or Password";
-
-		if($id)
+		$result['message']="Incorrect Password";
+		$result['message']=$request;
+		$this->db->update('users',$newrow,$array);
+		if($this->db->affected_rows())
 		{
-			$result['message']="Some Error Occured";
-			$this->db->where('id',$id);
-			$this->db->update('users',array('pass'=>$newrow['pass']));
-			if($this->db->affected_rows())
-			{
-				$result['status']=1;
-				$result['message']="Successfully Updated";
-			}	
-		}
-		else{
-			$this->db->where($row);
-			$this->db->update('users',$newrow);
-			if($this->db->affected_rows())
-			{
-				$result['status']=1;
-				$result['message']="Successfully Updated";
-			}
-		}
+			$result['status']=1;
+			$result['message']="Successfully Updated";
+		}	
+		print json_encode($result);
+	}
 
+
+	public function editProfile()
+	{
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata,true);
+
+	    $profile=$request['profile'];
+	    $array['id']=$profile['id'];
+	    $newprofile = array(
+	    	'bloodgroup'=>$profile['bloodgroup'],
+	    	'phone'=>$profile['phone'],	
+	    	'father'=>$profile['father'],	
+	    	'phonedad'=>$profile['phonedad'],	
+	    	'mother'=>$profile['mother'],	
+	    	'phonemom'=>$profile['phonemom'],	
+	    	'address'=>$profile['address']
+    	);
+		$result['status']=0;
+		$result['message']="No changes made";
+		$this->db->update('users',$newprofile,$array);
+		if($this->db->affected_rows())
+		{
+			$result['status']=1;
+			$result['message']="Successfully Updated";
+		}
 		print json_encode($result);
 	}
 

@@ -199,25 +199,35 @@ class Admin extends CI_Controller {
 		print json_encode($result);
 	}
 
-	public function removeMessSec()
+	public function deleteSec()
 	{
 		$result['status']=0;
-		$result['message']='Permission Denied';
+		$result['message']="Permission Denied";
 		$postdata = file_get_contents("php://input");
-		$request = json_decode($postdata, true);
+	    $request = json_decode($postdata, true);
 		$user = new User();
 		$mess = new Mess();
 		$id=$request['id'];
-		if($user->isMD($id)){
-			$result['message']='Database Error';
-			$array['id']=$request['sec'];
-			$array['mid']=$mess->getCurrentMid();
-			if($this->db->delete('sec', $array))
+		if($user->isMD($id))
+		{
+			$flag=1;
+			$result['status']=0;
+			$result['message']="Database Error";
+			$sec=$request['sec[]'];
+			foreach($sec as $toDelete['id'])
+			{
+				$toDelete['mid']=$mess->getCurrentMid();
+				if($toDelete['mid']!=0)
+					if(!$this->db->delete('sec',$toDelete))
+						$flag=0;
+			}
+			if($flag)
 			{
 				$result['status']=1;
-				$result['message']='Successfully done';
+				$result['message']="Successfully Inserted";
 			}
 		}
+
 		print json_encode($result);
 	}
 

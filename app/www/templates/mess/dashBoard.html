@@ -29,28 +29,42 @@
             </span>
         </div>
         <div class="card stable-bg list padding">
-            <h4 ng-click="showAddSecPopover()"><i ng-show="profile.level>2" class="icon ion-edit"></i> Mess Sec</h4>
+            <h4>Mess Sec</h4>
             <div ng-repeat="sec in details.sec">
                 <span class="item">
-                <div class="item item-button-right item-icon-left">
-                    <div ng-click="deleteSec(sec.id, sec.name)">
-                        <i class="ion-edit" ng-show="profile.level>2"></i> {{sec.name}}  ({{sec.branch}})
+                <div class="item item-button-right">
+                    <div>
+                        {{sec.name}}  ({{sec.branch}})
                     </div>
                     <button class="button button-balanced ink" ng-click="call(sec.phone)">
                         <i class="icon ion-ios-telephone"></i>
                     </button>
+                </div>
+                </span>
             </div>
-            </span>
+            <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
+                <a class="tab-item"  ng-click="showAddSecPopover()"  data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-plus-round"></i> Add
+                </a>
+                <a class="tab-item" ng-click="showDeleteSecPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-close-round"></i> Remove
+                </a>
+            </div>
         </div>
         </div>
-        <div ng-click="showEditMessForm()" class="card stable-bg list padding">
-            <h4><i ng-show="profile.level>2" class="icon ion-edit"></i> Mess Costs</h4>
+        <div class="card stable-bg list padding">
+            <h4>Mess Costs</h4>
             <span class="item">
                 Establishment Fee : {{details.establishment}} Rs
             </span>
             <span class="item">
                 Per Day Cost : {{details.cost_per_day}} Rs
             </span>
+            <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
+                <a ng-click="showEditMessForm()" class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-edit"></i> Edit
+                </a>
+            </div>
         </div>
     </ion-content>
 </ion-view>

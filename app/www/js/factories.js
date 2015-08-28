@@ -29,8 +29,14 @@ angular.module('Mess.factories', [])
         getCostDetails: function(data) {
             return generic.generic(user + 'getCostDetails/', data);
         },
-        enroll:function(id) {
-            return generic.generic(user + 'enroll/' +id);
+        editProfile: function(data) {
+            return generic.generic(user + 'editProfile/', data);
+        },
+        changePassword: function(data) {
+            return generic.generic(user + 'changePassword/', data);
+        },
+        enroll: function(id) {
+            return generic.generic(user + 'enroll/' + id);
         }
     }
 })
@@ -89,8 +95,8 @@ angular.module('Mess.factories', [])
         addSec: function(data) {
             return generic.generic(admin + 'addMessSec/', data);
         },
-        removeMessSec: function(data) {
-            return generic.generic(admin + 'removeMessSec/', data);
+        deleteSec: function(data) {
+            return generic.generic(admin + 'deleteSec/', data);
         }
     }
 })

@@ -49,7 +49,7 @@
         <!-- Mobile -->
         <label class="item item-input item-floating-label">
             <span class="input-label">Mobile (personal)</span>
-            <input required type="number" ng-model="user.phone" placeholder="Mobile (personal)">
+            <input required type="text" ng-model="user.phone" placeholder="Mobile (personal)">
         </label>
         <!-- Email -->
         <label class="item item-input item-floating-label">
@@ -73,7 +73,7 @@
         <!-- Address -->
         <label class="item item-input item-floating-label">
             <span class="input-label">Address</span>
-            <input type="number" ng-model="user.address" placeholder="Address">
+            <input type="text" ng-model="user.address" placeholder="Address">
         </label>
         <!-- Father -->
         <label class="item item-input item-floating-label">
@@ -88,12 +88,12 @@
         <!-- PhoneDad -->
         <label class="item item-input item-floating-label">
             <span class="input-label">Mobile (Father)</span>
-            <input required type="number" ng-model="user.phonedad" placeholder="Mobile (Father)">
+            <input required type="text" ng-model="user.phonedad" placeholder="Mobile (Father)">
         </label>
         <!-- PhoneMom -->
         <label class="item item-input item-floating-label">
             <span class="input-label">Mobile (Mother)</span>
-            <input type="number" ng-model="user.phonemom" placeholder="Mobile (Mother)">
+            <input type="text" ng-model="user.phonemom" placeholder="Mobile (Mother)">
         </label>
         <!-- Submit -->
         <button ng-click="submit()" ng-disabled="registerForm.$invalid" class="item button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">

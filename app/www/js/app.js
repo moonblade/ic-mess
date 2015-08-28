@@ -42,13 +42,13 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
 
     .state('login', {
         url: '/login',
-        templateUrl: 'templates/login/login.html',
+        templateUrl: 'templates/user/login.html',
         controller: 'LoginCtrl'
     })
 
     .state('register', {
         url: '/register',
-        templateUrl: 'templates/register/register.html',
+        templateUrl: 'templates/user/register.html',
         controller: 'RegisterCtrl'
     })
 
@@ -93,6 +93,21 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
                 }
             }
         })
+
+    .state('app.profile', {
+            url: '/profile',
+            views: {
+                'menuContent': {
+                    templateUrl: 'templates/user/profile.html',
+                    controller: 'ProfileCtrl'
+                },
+                'fabContent': {
+                    template: '<button ng-click="showEditProfilePopover()" id="fab-edit-profile" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-edit"></i></button>',
+                    controller: 'ProfileCtrl'
+                }
+            }
+        })
+
         // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
 });

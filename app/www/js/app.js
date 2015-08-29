@@ -113,6 +113,20 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
         }
     })
 
+    .state('app.feedback', {
+        url: '/feedback',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/feedback/feedback.html',
+                controller: 'FeedbackCtrl'
+            },
+            'fabContent': {
+                template: '',
+                controller: ''
+            }
+        }
+    })
+
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
 });

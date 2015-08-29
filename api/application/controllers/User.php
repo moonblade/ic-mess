@@ -79,6 +79,22 @@ class User extends CI_Controller {
 		print json_encode($result);
 	}
 
+	public function sendFeedback()
+	{
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata,true);
+		$result['status']=0;
+		$result['message']="Database Error";
+		$array['id']=$request['id'];
+		$array['feedback']=$request['feedback'];
+		if($this->db->insert('feedback', $array))
+		{
+			$result['status']=1;
+			$result['message']="Submitted Successfully";
+		}
+		print json_encode($result);
+	}
+
 
 	public function editProfile()
 	{

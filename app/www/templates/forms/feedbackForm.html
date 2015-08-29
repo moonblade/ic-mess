@@ -1,0 +1,12 @@
+<form name="feedbackForm">
+    <div class="list card vertical_center">
+        <label class="item item-input item-floating-label">
+            <textarea required rows="10" placeholder="Feedback" ng-model="feedback.feedback" > </textarea>
+        </label>
+        <!-- Buttons -->
+        <span class="item button-bar">
+            <!-- submit -->
+            <button ng-click="submit()" ng-disabled="feedbackForm.$invalid" class="button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">Submit</button>
+        </span>
+    </div>
+</form>

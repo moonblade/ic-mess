@@ -361,7 +361,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.addSecData = [];
     $scope.showFab = false;
     $scope.searchText = null;
-    
+
     $scope.call = function(number) {
         console.log("calling " + number);
         $window.open('tel:' + number);
@@ -619,7 +619,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('AdminCtrl', function($scope, $localstorage,$window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
+.controller('AdminCtrl', function($scope, $localstorage, $window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -940,4 +940,53 @@ angular.module('Mess.controllers', ['Mess.factories'])
 
     // Set Ink
     ionic.material.ink.displayEffect();
+})
+
+.controller('FeedbackCtrl', function($scope, user, $ionicLoading, $ionicPopup, $localstorage) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = false;
+    $scope.$parent.setExpanded(false);
+    $scope.$parent.setHeaderFab(false);
+    $scope.feedback={};
+    $scope.profile = $localstorage.getObject('profile');
+
+    $scope.submit = function() {
+        var dummy = {
+            'id': $scope.profile.id,
+            'feedback': $scope.feedback.feedback
+        };
+        var confirm = $ionicPopup.confirm({
+            title: 'Confirm',
+            template: 'Are you sure you want to submit'
+        }).then(function(res) {
+            if (res) {
+                $ionicLoading.hide();
+                user.sendFeedback(dummy)
+                    .success(function(data) {
+                        console.log(data);
+                        if (data.message == 1) {
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Success',
+                                template: data.message
+                            });
+                        } else {
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Error',
+                                template: data.message
+                            });
+                        }
+                    }).error(function() {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Error',
+                            template: 'Connection Error'
+                        });
+                    }).then(function() {
+                        $ionicLoading.hide();
+                    })
+            }
+        })
+    }
+    ionic.material.ink.displayEffect();
+
 });

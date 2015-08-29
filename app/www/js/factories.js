@@ -35,6 +35,9 @@ angular.module('Mess.factories', [])
         changePassword: function(data) {
             return generic.generic(user + 'changePassword/', data);
         },
+        sendFeedback: function(data) {
+            return generic.generic(user + 'sendFeedback/', data);
+        },
         enroll: function(id) {
             return generic.generic(user + 'enroll/' + id);
         }

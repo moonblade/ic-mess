@@ -15,6 +15,11 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
     }
+
+    $ionicPlatform.ready(function() {
+        if (navigator && navigator.splashscreen)
+            navigator.splashscreen.hide();
+    });
 })
 
 .value('appConfig', {
@@ -67,47 +72,47 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
     })
 
     .state('app.dashboard', {
-            url: '/dashboard',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/mess/dashBoard.html',
-                    controller: 'DashBoardCtrl'
-                },
-                'fabContent': {
-                    template: '<button ng-click="enroll()" ng-show="showFab" id="fab-enroll" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
-                    controller: 'DashBoardCtrl'
-                }
+        url: '/dashboard',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/mess/dashBoard.html',
+                controller: 'DashBoardCtrl'
+            },
+            'fabContent': {
+                template: '<button ng-click="enroll()" ng-show="showFab" id="fab-enroll" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
+                controller: 'DashBoardCtrl'
             }
-        })
+        }
+    })
 
     .state('app.admin', {
-            url: '/admin',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/mess/admin.html',
-                    controller: 'AdminCtrl'
-                },
-                'fabContent': {
-                    template: '<button ng-click="showCreateMessForm()" ng-show="nodata && profile.level>2" id="fab-add-mess" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
-                    controller: 'AdminCtrl'
-                }
+        url: '/admin',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/mess/admin.html',
+                controller: 'AdminCtrl'
+            },
+            'fabContent': {
+                template: '<button ng-click="showCreateMessForm()" ng-show="nodata && profile.level>2" id="fab-add-mess" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-plus"></i></button>',
+                controller: 'AdminCtrl'
             }
-        })
+        }
+    })
 
     .state('app.profile', {
-            url: '/profile',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/user/profile.html',
-                    controller: 'ProfileCtrl'
-                },
-                'fabContent': {
-                    template: '<button ng-click="showEditProfilePopover()" id="fab-edit-profile" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-edit"></i></button>',
-                    controller: 'ProfileCtrl'
-                }
+        url: '/profile',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/user/profile.html',
+                controller: 'ProfileCtrl'
+            },
+            'fabContent': {
+                template: '<button ng-click="showEditProfilePopover()" id="fab-edit-profile" class="button button-fab button-fab-bottom-right button-energized-900"><i class="icon ion-edit"></i></button>',
+                controller: 'ProfileCtrl'
             }
-        })
+        }
+    })
 
-        // if none of the above states are matched, use this as the fallback
+    // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/login');
 });

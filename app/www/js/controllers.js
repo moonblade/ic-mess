@@ -360,7 +360,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.profile = $localstorage.getObject('profile');
     $scope.addSecData = [];
     $scope.showFab = false;
-
+    $scope.searchText = null;
+    
     $scope.call = function(number) {
         console.log("calling " + number);
         $window.open('tel:' + number);
@@ -638,6 +639,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.showBarredCard = false;
     $scope.createMessDetails = {};
     $scope.nameList = {};
+    $scope.searchText = null;
 
     // ionic.material.ink.displayEffect();
 

@@ -36,7 +36,13 @@
                 </div>
             </div>
             <div ng-show="expandPendingCard">
-                <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
+                <div>
+                    <label class="item item-input item-icon-right">
+                        <input required type="text" ng-model="searchText" placeholder="Filter">
+                        <i class="icon ion-android-search"></i>
+                    </label>
+                </div>
+                <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList | filter:searchText" class="">
                     <span ng-show="person.status==0" class="item">
                     <h3>{{person.name}} ({{person.branch}})</h3>
                     </span>
@@ -53,7 +59,13 @@
                 </div>
             </div>
             <div ng-show="expandAcceptedCard">
-                <a ng-click="changeStatus(person.id,person.name,2)" ng-repeat="person in personList" class="">
+                <div>
+                    <label class="item item-input item-icon-right">
+                        <input required type="text" ng-model="searchText" placeholder="Filter">
+                        <i class="icon ion-android-search"></i>
+                    </label>
+                </div>
+                <a ng-click="changeStatus(person.id,person.name,2)" ng-repeat="person in personList | filter:searchText" class="">
                     <span ng-show="person.status==1" class="item">
                     <h3>{{person.name}} ({{person.branch}})</h3>
                     </span>
@@ -70,7 +82,13 @@
                 </div>
             </div>
             <div ng-show="expandBarredCard">
-                <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList" class="">
+                <div>
+                    <label class="item item-input item-icon-right">
+                        <input required type="text" ng-model="searchText" placeholder="Filter">
+                        <i class="icon ion-android-search"></i>
+                    </label>
+                </div>
+                <a ng-click="changeStatus(person.id,person.name,1)" ng-repeat="person in personList | filter:searchText" class="">
                     <span ng-show="person.status==2" class="item">
                     <h3>{{person.name}} ({{person.branch}})</h3>
                     </span>

@@ -308,7 +308,9 @@ class Admin extends CI_Controller {
 				$result['status']=1;
 				$temp = json_decode(json_encode($temp),true);
 				$array = $temp;
-				$f = fopen($mid.'.csv', 'w');
+				// $string = '../../history/'.$mid.'.csv';
+				$string = ''.$mid.'.csv';
+				$f = fopen($string, 'w');
 
 				$Keys = false;
 				foreach ($array as $line)
@@ -333,7 +335,7 @@ class Admin extends CI_Controller {
 				    $line_array[]=($line['cost']);
 				    fputcsv($f, $line_array);
 				}
-				$result['message']=$mid.'.csv';
+				$result['message']=''.$mid.'.csv';
 			}
 		}
 		print json_encode($result);

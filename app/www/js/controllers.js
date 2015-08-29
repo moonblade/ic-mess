@@ -641,6 +641,9 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.nameList = {};
     $scope.searchText = null;
 
+    $scope.showCard=false;
+    $scope.checkStatus=0;
+    $scope.title="Pending";
     // ionic.material.ink.displayEffect();
 
     $scope.createMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/createMessForm.html', {
@@ -744,6 +747,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 console.log(data);
                 if (data.status == 1) {
                     $scope.personList = data.message;
+                    $scope.showCard=true;
                     var tempCount;
                     if ($scope.stateExists($scope.personList, 0))
                         $scope.showPendingCard = true;
@@ -764,6 +768,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
     }
 
     $scope.changeStatus = function(id, name, status) {
+        if(status==3)
+            status=1;
         var question = 'Accept ' + name + '?';
         if (status == 2)
             var question = 'Bar ' + name + '?';

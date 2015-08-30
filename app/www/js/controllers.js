@@ -1,4 +1,4 @@
-angular.module('Mess.controllers', ['Mess.factories'])
+angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopover, $timeout, $state, $localstorage) {
     // Form data for the login modal
@@ -619,7 +619,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('AdminCtrl', function($scope, $localstorage, $window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
+.controller('AdminCtrl', function($scope, $cordovaFileTransfer, $localstorage, $window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -641,9 +641,9 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.nameList = {};
     $scope.searchText = null;
 
-    $scope.showCard=false;
-    $scope.checkStatus=0;
-    $scope.title="Pending";
+    $scope.showCard = false;
+    $scope.checkStatus = 0;
+    $scope.title = "Pending";
     // ionic.material.ink.displayEffect();
 
     $scope.createMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/createMessForm.html', {
@@ -699,6 +699,26 @@ angular.module('Mess.controllers', ['Mess.factories'])
         return (a);
     }
 
+    $scope.download = function(url) {
+        var filename = url.split("/").pop();
+        var targetPath = filename;
+        var trustHosts = true
+        var options = {};
+        document.addEventListener('deviceready', function() {
+            console.log("downloading");
+            $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+                .then(function(result) {
+                    // Success!
+                }, function(err) {
+                    // Error
+                }, function(progress) {
+                    $timeout(function() {
+                        $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+                    })
+                });
+
+        }, false);
+    }
 
     $scope.getAllCost = function() {
         $ionicLoading.show();
@@ -716,7 +736,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                         if (res) {
                             var csvLocation = appConfig.serverUrl + data.message;
                             console.log("goto : " + csvLocation);
-                            $window.open(csvLocation);
+                            $scope.download(csvLocation);
                         }
                     });
                 } else {
@@ -747,7 +767,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
                 console.log(data);
                 if (data.status == 1) {
                     $scope.personList = data.message;
-                    $scope.showCard=true;
+                    $scope.showCard = true;
                     var tempCount;
                     if ($scope.stateExists($scope.personList, 0))
                         $scope.showPendingCard = true;
@@ -768,8 +788,8 @@ angular.module('Mess.controllers', ['Mess.factories'])
     }
 
     $scope.changeStatus = function(id, name, status) {
-        if(status==3)
-            status=1;
+        if (status == 3)
+            status = 1;
         var question = 'Accept ' + name + '?';
         if (status == 2)
             var question = 'Bar ' + name + '?';
@@ -954,7 +974,7 @@ angular.module('Mess.controllers', ['Mess.factories'])
     $scope.isExpanded = false;
     $scope.$parent.setExpanded(false);
     $scope.$parent.setHeaderFab(false);
-    $scope.feedback={};
+    $scope.feedback = {};
     $scope.profile = $localstorage.getObject('profile');
 
     $scope.submit = function() {

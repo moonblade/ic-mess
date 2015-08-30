@@ -279,7 +279,7 @@ class Admin extends CI_Controller {
 			$result['message']="Database Error";
 			if($mid==0)
 				$mid=$mess->getCurrentMid();
-			$query=$this->db->query('select id from inmate where mid='.$mid.' and status=1 order by name');
+			$query=$this->db->query('select id from inmate where mid='.$mid.' and status=1');
 			$temp=$query->result();
 			if($temp)
 			{

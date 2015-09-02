@@ -17,6 +17,11 @@
                     <option value="AB-">AB-ve</option>
                 </select>
             </label>
+            <!-- DOB -->
+            <label class="item item-input item-floating-label">
+                <span class="">Date of Birth</span>
+                <input type="date" ng-model="profile.dob" placeholder="Date of Birth">
+            </label>
             <!-- Mobile -->
             <label class="item item-input item-floating-label">
                 <span class="input-label">Mobile (personal)</span>
@@ -48,10 +53,10 @@
                 <input type="text" ng-model="profile.phonemom" placeholder="Mobile (Mother)">
             </label>
         </div>
-            <!-- Submit -->
-            <button ng-click="submit()" ng-disabled="editProfileForm.$invalid" class="item button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">
-                Submit
-            </button>
-            <!-- </div> -->
+        <!-- Submit -->
+        <button ng-click="submit()" ng-disabled="editProfileForm.$invalid" class="item button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">
+            Submit
+        </button>
+        <!-- </div> -->
     </div>
 </form>

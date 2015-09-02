@@ -619,7 +619,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('AdminCtrl', function($scope, $cordovaFileTransfer, $localstorage, $window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
+.controller('AdminCtrl', function($scope,$ionicPlatform, $cordovaFileTransfer, $localstorage, $window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -704,7 +704,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
         var targetPath = filename;
         var trustHosts = true
         var options = {};
-        document.addEventListener('deviceready', function() {
+        $ionicPlatform.ready(function() {
             console.log("downloading");
             $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
                 .then(function(result) {
@@ -717,7 +717,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                     })
                 });
 
-        }, false);
+        });
     }
 
     $scope.getAllCost = function() {
@@ -736,7 +736,8 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                         if (res) {
                             var csvLocation = appConfig.serverUrl + data.message;
                             console.log("goto : " + csvLocation);
-                            $scope.download(csvLocation);
+                            $window.open(encodeURI(csvLocation),'_system');
+                            // $scope.download(csvLocation);
                         }
                     });
                 } else {

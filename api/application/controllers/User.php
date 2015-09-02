@@ -110,7 +110,8 @@ class User extends CI_Controller {
 	    	'phonedad'=>$profile['phonedad'],	
 	    	'mother'=>$profile['mother'],	
 	    	'phonemom'=>$profile['phonemom'],	
-	    	'address'=>$profile['address']
+	    	'address'=>$profile['address'],
+	    	'dob'=>$profile['dob']
     	);
 		$result['status']=0;
 		$result['message']="No changes made";

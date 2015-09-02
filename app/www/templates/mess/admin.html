@@ -38,19 +38,39 @@
                     <i class="icon ion-close-round"></i> Barred
                 </a>
             </div>
-            <div >
+            <div>
                 <label class="item item-input item-icon-right">
                     <input type="text" ng-model="searchText" placeholder="Filter">
                     <i class="icon ion-android-search"></i>
                 </label>
             </div>
-            <div id="personLis" >
-                
-            <a ng-click="changeStatus(person.id,person.name,checkStatus+1)" ng-repeat="person in personList | filter:searchText" class="">
-                <span ng-show="person.status==checkStatus" class="item">
+            <div id="personLis">
+                <a ng-click="changeStatus(person.id,person.name,checkStatus+1)" ng-repeat="person in personList | filter:searchText" class="">
+                    <span ng-show="person.status==checkStatus" class="item">
                     <h3>{{person.name}} ({{person.branch}})</h3>
                     </span>
-            </a>
+                </a>
+            </div>
+        </div>
+        <div class="card stable-bg list padding" ng-show="!showMDList" ng-click="getMDs()">
+            <h4>Show MD List</h4>
+        </div>
+        <div class="card stable-bg list padding" ng-show="showMDList">
+            <h4>Mess MD</h4>
+            <div ng-repeat="md in MDList">
+                <span class="item">
+                    <div>
+                        {{md.name}}  ({{md.branch}})
+                    </div>
+                </span>
+            </div>
+            <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
+                <a class="tab-item" ng-click="showAddMDPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-plus-round"></i> Add
+                </a>
+                <a class="tab-item" ng-click="showDeleteMDPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-close-round"></i> Remove
+                </a>
             </div>
         </div>
     </ion-content>

@@ -619,7 +619,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     ionic.material.ink.displayEffect();
 })
 
-.controller('AdminCtrl', function($scope,$ionicPlatform, $cordovaFileTransfer, $localstorage, $window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
+.controller('AdminCtrl', function($scope, $ionicPlatform, $cordovaFileTransfer, $localstorage, $window, $ionicPopup, $ionicLoading, admin, $ionicPopover, mess, appConfig) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -644,6 +644,10 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     $scope.showCard = false;
     $scope.checkStatus = 0;
     $scope.title = "Pending";
+
+    $scope.showMDList = false;
+    $scope.MDList = {};
+    $scope.mdCandidateList = {};
     // ionic.material.ink.displayEffect();
 
     $scope.createMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/createMessForm.html', {
@@ -699,6 +703,34 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
         return (a);
     }
 
+    $scope.getMDs = function() {
+        var dummy = {
+            'id': $scope.profile.id
+        }
+        $ionicLoading.show();
+        admin.getMDs(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.MDList = data.message;
+                    $scope.showMDList = true;
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                console.log(err);
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+            })
+    }
+
     $scope.download = function(url) {
         var filename = url.split("/").pop();
         var targetPath = filename;
@@ -736,21 +768,21 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                         if (res) {
                             var csvLocation = appConfig.serverUrl + data.message;
                             console.log("goto : " + csvLocation);
-                            $window.open(encodeURI(csvLocation),'_system');
+                            $window.open(encodeURI(csvLocation), '_system');
                             // $scope.download(csvLocation);
                         }
                     });
                 } else {
                     var alert = $ionicPopup.alert({
                         title: 'Error',
-                        templates: data.message
+                        template: data.message
                     });
                 }
             }).error(function(err) {
                 console.log(err);
                 var alert = $ionicPopup.alert({
                     title: 'Error',
-                    templates: data.message
+                    template: data.message
                 });
 
             }).then(function() {
@@ -866,6 +898,124 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                 $ionicLoading.hide();
             });
     }
+
+
+
+
+    $scope.addMDPopover = $ionicPopover.fromTemplateUrl('templates/forms/addMDForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.addMDPopover = popover;
+    });
+
+    $scope.deleteMDPopover = $ionicPopover.fromTemplateUrl('templates/forms/deleteMDForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.deleteMDPopover = popover;
+    });
+
+    $scope.showDeleteMDPopover = function() {
+        $scope.deleteMDPopover.show();
+    }
+
+    $scope.deleteMD = function() {
+        $scope.deleteMDPopover.hide();
+        $ionicLoading.show();
+        $scope.deleteMDData = [];
+        $scope.MDList.forEach(function(list) {
+            if (list.checked)
+                $scope.deleteMDData.push(list.id);
+        });
+        var dummy = {
+            'id': $scope.profile.id,
+            'md[]': $scope.deleteMDData
+        }
+        admin.deleteMD(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.getMDs();
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.addMDPopover.hide();
+            });
+
+    }
+
+    $scope.addMD = function() {
+        $ionicLoading.show();
+        $scope.addMDData = [];
+        $scope.mdCandidateList.forEach(function(list) {
+            if (list.checked)
+                $scope.addMDData.push(list.id);
+        });
+        var dummy = {
+            'id': $scope.profile.id,
+            'md[]': $scope.addMDData
+        }
+        admin.addMD(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.getMDs();
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.addMDPopover.hide();
+            });
+    }
+
+    $scope.showAddMDPopover = function() {
+        $ionicLoading.show();
+        var dummy = {
+            'id': $scope.profile.id
+        };
+        admin.getMDCandidates(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.mdCandidateList = data.message;
+                    if ($scope.profile.level > 2)
+                        $scope.addMDPopover.show();
+                    console.log($scope.mdCandidateList);
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                console.log(err);
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+            })
+    }
+
 })
 
 .controller('ProfileCtrl', function($scope, $localstorage, $ionicPopover, $ionicLoading, user, $ionicPopup) {

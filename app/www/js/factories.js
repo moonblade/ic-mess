@@ -103,7 +103,20 @@ angular.module('Mess.factories', [])
         },
         deleteSec: function(data) {
             return generic.generic(admin + 'deleteSec/', data);
+        },
+        getMDs: function(data) {
+            return generic.generic(admin + 'getUsersGreater/2', data);
+        },
+        addMD: function(data) {
+            return generic.generic(admin + 'changeMD/3', data);
+        },
+        deleteMD: function(data) {
+            return generic.generic(admin + 'changeMD/1', data);
+        },
+        getMDCandidates: function(data) {
+            return generic.generic(admin + 'getUsersGreater/0/3', data);
         }
+
     }
 })
 

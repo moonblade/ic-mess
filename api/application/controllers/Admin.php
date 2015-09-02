@@ -159,6 +159,28 @@ class Admin extends CI_Controller {
 		print json_encode($result);
 	}
 
+	public function getUsersGreater($level=0, $highLevel=11)
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user= new User();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			$array['level >']=$level;
+			$array['level <']=$highLevel;
+			$this->db->select('id, name, branch');
+			$query=$this->db->get_where('users',$array);
+			$temp=$query->result();
+			if($temp){
+		   		$result['status']=1;
+			    $result['message']=$temp;	
+			}
+		}
+		print json_encode($result);
+	}
 
 	public function editMess($mid=0)
 	{
@@ -224,7 +246,7 @@ class Admin extends CI_Controller {
 			if($flag)
 			{
 				$result['status']=1;
-				$result['message']="Successfully Inserted";
+				$result['message']="Successfully Deleted";
 			}
 		}
 
@@ -257,6 +279,46 @@ class Admin extends CI_Controller {
 			{
 				$result['status']=1;
 				$result['message']="Successfully Inserted";
+			}
+		}
+
+		print json_encode($result);
+	}
+
+
+	public function changeMD($level=3)
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user = new User();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			$flag=1;
+			$result['status']=0;
+			$result['message']="Database Error";
+			$md=$request['md[]'];
+			foreach($md as $toChange['id'])
+			{
+				if($toChange['id']!=$id){
+					$query=$this->db->get_where('users',$toChange);
+					$temp=$query->row_array();
+					if($temp['level']<4)
+					{	
+					    $this->db->where('id',$toChange['id']);
+					    $this->db->update('users',array('level'=>$level));
+				   		if(!$this->db->affected_rows())
+				   			$flag = 0;
+					}
+				}
+			}
+			if($flag)
+			{
+				$result['status']=1;
+				$result['message']="Successfully Inserted";
+				$result['message']=$request;
 			}
 		}
 

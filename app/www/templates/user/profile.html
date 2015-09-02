@@ -7,9 +7,7 @@
                 <h2>{{profile.name}}</h2>
                 <p>{{profile.phone}}</p>
             </div>
-        </div>
-        <div class="card stable-bg list padding">
-            <h4>Personal Details</h4>
+            <h4 class="item item-divider">Personal Details</h4>
             <div ng-show="profile.level>1" class="item">
                 <div class="bold" style="float: left">
                     Position
@@ -55,19 +53,9 @@
                     {{profile.branch}}
                 </div>
             </div>
-
-            <div class="item tabs tabs-secondary tabs-icon-left">
-                <a ng-click="showChangePasswordPopover()" class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5">
-                    <i class="icon ion-locked"></i> Change Password
-                </a>
-            </div>
-        </div>
-        <div class="card stable-bg list padding">
-            <h4>Home Address</h4>
+            <h4 class="item item-divider">Home Address</h4>
             <p>{{profile.address}}</p>
-        </div>
-        <div class="card stable-bg list padding">
-            <h4>Contact Details</h4>
+            <h4 class="item item-divider">Contact Details</h4>
             <div class="item bold">
                 Father
             </div>
@@ -89,6 +77,11 @@
                 <div style="float: right">
                     {{profile.phonemom}}
                 </div>
+            </div>
+            <div class="item tabs tabs-secondary tabs-icon-left">
+                <a ng-click="showChangePasswordPopover()" class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-locked"></i> Change Password
+                </a>
             </div>
         </div>
     </ion-content>

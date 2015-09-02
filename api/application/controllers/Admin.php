@@ -244,6 +244,7 @@ class Admin extends CI_Controller {
 				$mid=$mess->getCurrentMid();
 			$array['establishment']=$request['establishment'];
 			$array['cost_per_day']=$request['cost_per_day'];
+			$array['no_of_days']=$request['no_of_days'];
 			$this->db->where('mid',$mid);
 		    $this->db->update('mess',$array);
 	   		$result['status']=1;
@@ -468,9 +469,11 @@ class Admin extends CI_Controller {
 			$toInsert['mid']=$mess->getCurrentMid();
 			foreach($date as $toInsert['date'])
 			{
-				if($toInsert['mid']!=0)
+				if($toInsert['mid']!=0){
+					$this->db->delete('attendance',$toInsert);
 					if(!$this->db->insert('visibility',$toInsert))
 						$flag=0;
+				}
 			}
 			if($flag)
 			{

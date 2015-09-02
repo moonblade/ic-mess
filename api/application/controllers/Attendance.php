@@ -66,10 +66,20 @@ class Attendance extends CI_Controller {
 		for($i=0;$i<$nod;$i++)
 		{
 			$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
-			if($this->dateAbsent($date,$daysAbsent))
-				$days[$date]=0;
-			else			
-				$days[$date]=1;
+			$visibility['mid']=$array['mid'];
+			$visibility['date']=$date;
+			$query=$this->db->get_where('visibility',$visibility);
+			if(!$query->row_array())
+			{
+				if($this->dateAbsent($date,$daysAbsent))
+					$days[$date]=0;
+				else			
+					$days[$date]=1;
+			}	
+			else
+			{
+				$nod++;
+			}
 		}
 		$result['status']=1;
 		$result['message']=$days;

@@ -27,32 +27,7 @@
             <span class="item">
                 Duration : {{details.no_of_days}} Days
             </span>
-        </div>
-        <div class="card stable-bg list padding">
-            <h4>Mess Sec</h4>
-            <div ng-repeat="sec in details.sec">
-                <span class="item">
-                <div class="item item-button-right">
-                    <div>
-                        {{sec.name}}  ({{sec.branch}})
-                    </div>
-                    <button class="button button-balanced ink" ng-click="call(sec.phone)">
-                        <i class="icon ion-ios-telephone"></i>
-                    </button>
-                </div>
-                </span>
-            </div>
-            <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
-                <a class="tab-item" ng-click="showAddSecPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
-                    <i class="icon ion-plus-round"></i> Add
-                </a>
-                <a class="tab-item" ng-click="showDeleteSecPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
-                    <i class="icon ion-close-round"></i> Remove
-                </a>
-            </div>
-        </div>
-        <div class="card stable-bg list padding">
-            <h4>Mess Costs</h4>
+            <h4 class="item item-divider">Mess Costs</h4>
             <span class="item">
                 Establishment Fee : {{details.establishment}} Rs
             </span>
@@ -62,6 +37,25 @@
             <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
                 <a ng-click="showEditMessForm()" class="tab-item" data-ink-color="#336699" data-ink-opacity="0.5">
                     <i class="icon ion-edit"></i> Edit
+                </a>
+            </div>
+        </div>
+        <div class="card stable-bg list padding">
+            <h4>Mess Sec</h4>
+            <div ng-repeat="sec in details.sec">
+                <span class="item">
+                <div class="item item-icon-right" ng-click="call(sec.phone)">
+                        {{sec.name}}  ({{sec.branch}})
+                        <i class="icon ion-ios-telephone-outline"></i>
+                </div>
+                </span>
+            </div>
+            <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
+                <a class="tab-item" ng-click="showAddSecPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-plus-round"></i> Add
+                </a>
+                <a class="tab-item" ng-click="showDeleteSecPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-close-round"></i> Remove
                 </a>
             </div>
         </div>

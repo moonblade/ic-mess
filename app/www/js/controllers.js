@@ -410,6 +410,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                     $scope.details = data.message;
                     $scope.details.establishment = parseInt($scope.details.establishment);
                     $scope.details.cost_per_day = parseInt($scope.details.cost_per_day);
+                    $scope.details.no_of_days = parseInt($scope.details.no_of_days);
                 }
             }).error(function(err) {
                 $ionicLoading.hide();
@@ -588,7 +589,8 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
         var dummy = {
             'id': $scope.profile.id,
             'establishment': $scope.details.establishment,
-            'cost_per_day': $scope.details.cost_per_day
+            'cost_per_day': $scope.details.cost_per_day,
+            'no_of_days': $scope.details.no_of_days
         };
 
         $ionicLoading.show();

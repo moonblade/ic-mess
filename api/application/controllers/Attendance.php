@@ -107,7 +107,7 @@ class Attendance extends CI_Controller {
 		return 0;
 	}
 
-	public function setAbsent($mid=0)
+	public function setAbsent($id=0,$date=0,$op=0)
 	{
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);
@@ -116,10 +116,15 @@ class Attendance extends CI_Controller {
 		$result['message']="Change Failed";
 		$mess=new Mess();
 		$user=new User();
-		if($mid==0)
-			$currentMess=$mess->getMessDetails();
-		$array['id']=$request['id'];
-		$array['date']=$request['date'];
+		$currentMess=$mess->getMessDetails();
+		if($id==0)
+			$array['id']=$request['id'];
+		else
+			$array['id']=$id;
+		if($date==0)
+			$array['date']=$request['date'];
+		else
+			$array['date']=$date;
 		$currenttime=(int)date('Gis');
 		$mark=203000;
 		$markdate=date('Y-m-d');
@@ -148,10 +153,12 @@ class Attendance extends CI_Controller {
 				$result['message']="Successfully Marked Absent";
 			}
 		}
-		print json_encode($result);
+		if($op==0)
+			print json_encode($result);
+		return $result['status'];
 	}
 
-	public function setPresent()
+	public function setPresent($id=0,$date=0,$op=0)
 	{
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);
@@ -160,8 +167,14 @@ class Attendance extends CI_Controller {
 		$result['message']="Change Failed";
 		$mess=new Mess();
 		$currentMess=$mess->getMessDetails();
-		$array['id']=$request['id'];
-		$array['date']=$request['date'];
+		if($id==0)
+			$array['id']=$request['id'];
+		else
+			$array['id']=$id;
+		if($date==0)
+			$array['date']=$request['date'];
+		else
+			$array['date']=$date;
 		$currenttime=(int)date('Gis');
 		$mark=203000;
 		$markdate=date('Y-m-d');
@@ -185,7 +198,9 @@ class Attendance extends CI_Controller {
 				$result['message']="Successfully Marked Present";
 			}
 		}
-		print json_encode($result);
+		if($op==0)
+			print json_encode($result);
+		return $result['status'];
 	}
 
 	public function getCount()

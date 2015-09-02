@@ -106,16 +106,63 @@ class Admin extends CI_Controller {
 	    $result['status']=0;
 	    $result['message']="None Found";
 	    $mess=new Mess();
+	    $currentMess = $mess->getMessDetails();
 	    if($mid==0)
 	    	$mid=$mess->getCurrentMid();
 	    $id=$request['acceptId'];
-	    $this->db->where('id',$id);
-	    $this->db->update('inmate',array('status'=>$status));
-   		if($this->db->affected_rows())
-   		{
-	   		$result['status']=1;
-		    $result['message']="Successfully Updated";	
-   		}
+	    if($status==1)
+	    {
+	    	// set rest of the days as present
+		    $this->db->where('id',$id);
+		    $this->db->update('inmate',array('status'=>$status));
+	   		if($this->db->affected_rows())
+	   		{
+		   		$result['status']=1;
+			    $result['message']="Successfully Updated";	
+	   		}
+	    	$today = date('Y-m-d');
+	    	$attendance = new Attendance($id);
+	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
+	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$currentMess['no_of_days'].' days'));
+	    	$pointer = $tomorrow;
+	    	while($pointer<=$till)
+	    	{
+	    		$attendance->setPresent($id,$pointer,1);
+		    	$pointer = date('Y-m-d',strtotime($pointer.' +1 days'));
+	    	}
+	    }
+	    else if($status==2)
+	    {
+	    	// set rest of the days as absent
+	    	$today = date('Y-m-d');
+	    	$attendance = new Attendance($id);
+	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
+	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$currentMess['no_of_days'].' days'));
+	    	$pointer = $tomorrow;
+	    	while(strtotime($pointer)<=strtotime($till))
+	    	{
+	    		$result['debug']="boo";
+	    		$attendance->setAbsent($id,$pointer,1);
+		    	$pointer = date('Y-m-d',strtotime($pointer.' +1 days'));
+	    	}
+		    $this->db->where('id',$id);
+		    $this->db->update('inmate',array('status'=>$status));
+	   		if($this->db->affected_rows())
+	   		{
+		   		$result['status']=1;
+			    $result['message']="Successfully Updated";	
+	   		}
+	    }
+	    else
+	    {
+	   		$this->db->where('id',$id);
+		    $this->db->update('inmate',array('status'=>$status));
+	   		if($this->db->affected_rows())
+	   		{
+		   		$result['status']=1;
+			    $result['message']="Successfully Updated";	
+	   		}
+	    }
    		print json_encode($result);
 	}
 

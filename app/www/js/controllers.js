@@ -503,13 +503,14 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                     });
                 }
             }).error(function(err) {
+                $ionicLoading.hide();
                 var alert = $ionicPopup.alert({
                     title: 'Error',
                     template: 'Connection Error'
                 });
             }).then(function() {
                 $ionicLoading.hide();
-                $scope.addSecPopover.hide();
+                $scope.deleteSecPopover.hide();
             });
 
     }
@@ -537,6 +538,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                     });
                 }
             }).error(function(err) {
+                $ionicLoading.hide();
                 var alert = $ionicPopup.alert({
                     title: 'Error',
                     template: 'Connection Error'
@@ -631,23 +633,25 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     $scope.tomorrowCount = 0;
     $scope.personList = {};
     $scope.details = {};
-    $scope.expandPendingCard = false;
-    $scope.showPendingCard = false;
-    $scope.expandAcceptedCard = false;
-    $scope.showAcceptedCard = false;
-    $scope.expandBarredCard = false;
-    $scope.showBarredCard = false;
     $scope.createMessDetails = {};
     $scope.nameList = {};
     $scope.searchText = null;
 
-    $scope.showCard = false;
-    $scope.checkStatus = 0;
-    $scope.title = "Pending";
+    $scope.init = function() {
+        $scope.showInmateCard = false;
+        $scope.checkStatus = 0;
+        $scope.title = "Pending";
 
-    $scope.showMDList = false;
-    $scope.MDList = {};
-    $scope.mdCandidateList = {};
+        $scope.MDList = {};
+        $scope.showMDList = false;
+        $scope.mdCandidateList = {};
+
+        $scope.dates = {};
+        $scope.datesString = [];
+        $scope.showDateCard = false;
+        $scope.dateCanditates = {};
+    }
+    $scope.init();
     // ionic.material.ink.displayEffect();
 
     $scope.createMessPopover = $ionicPopover.fromTemplateUrl('templates/forms/createMessForm.html', {
@@ -704,31 +708,35 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     }
 
     $scope.getMDs = function() {
-        var dummy = {
-            'id': $scope.profile.id
-        }
-        $ionicLoading.show();
-        admin.getMDs(dummy)
-            .success(function(data) {
-                console.log(data);
-                if (data.status == 1) {
-                    $scope.MDList = data.message;
-                    $scope.showMDList = true;
-                } else {
+        // if (!$scope.showMDList) {
+
+            $scope.init();
+            var dummy = {
+                'id': $scope.profile.id
+            }
+            $ionicLoading.show();
+            admin.getMDs(dummy)
+                .success(function(data) {
+                    console.log(data);
+                    if (data.status == 1) {
+                        $scope.MDList = data.message;
+                        $scope.showMDList = true;
+                    } else {
+                        var alert = $ionicPopup.alert({
+                            title: 'Error',
+                            template: data.message
+                        });
+                    }
+                }).error(function(err) {
+                    console.log(err);
                     var alert = $ionicPopup.alert({
                         title: 'Error',
-                        template: data.message
+                        template: 'Connection Error'
                     });
-                }
-            }).error(function(err) {
-                console.log(err);
-                var alert = $ionicPopup.alert({
-                    title: 'Error',
-                    template: 'Connection Error'
-                });
-            }).then(function() {
-                $ionicLoading.hide();
-            })
+                }).then(function() {
+                    $ionicLoading.hide();
+                })
+        // }
     }
 
     $scope.download = function(url) {
@@ -791,33 +799,29 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     }
 
     $scope.getPending = function() {
-        $ionicLoading.show();
-        var sendData = {
-            'id': $scope.profile.id
-        }
-        admin.getPending(sendData)
-            .success(function(data) {
-                console.log(data);
-                if (data.status == 1) {
-                    $scope.personList = data.message;
-                    $scope.showCard = true;
-                    var tempCount;
-                    if ($scope.stateExists($scope.personList, 0))
-                        $scope.showPendingCard = true;
-                    if ($scope.stateExists($scope.personList, 1))
-                        $scope.showAcceptedCard = true;
-                    if ($scope.stateExists($scope.personList, 2))
-                        $scope.showBarredCard = true;
-                } else {
-                    $scope.noStudentExists = true;
-                }
-            }).error(function(err) {
-                $ionicLoading.hide();
-                console.log(err);
-            }).then(function() {
-                $ionicLoading.hide();
-            });
+        // if (!$scope.showInmateCard) {
 
+            $scope.init();
+            $ionicLoading.show();
+            var sendData = {
+                'id': $scope.profile.id
+            }
+            admin.getPending(sendData)
+                .success(function(data) {
+                    console.log(data);
+                    if (data.status == 1) {
+                        $scope.personList = data.message;
+                        $scope.showInmateCard = true;
+                    } else {
+                        $scope.noStudentExists = true;
+                    }
+                }).error(function(err) {
+                    $ionicLoading.hide();
+                    console.log(err);
+                }).then(function() {
+                    $ionicLoading.hide();
+                });
+        // }
     }
 
     $scope.changeStatus = function(id, name, status) {
@@ -942,13 +946,14 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                     });
                 }
             }).error(function(err) {
+                $ionicLoading.hide();
                 var alert = $ionicPopup.alert({
                     title: 'Error',
                     template: 'Connection Error'
                 });
             }).then(function() {
                 $ionicLoading.hide();
-                $scope.addMDPopover.hide();
+                $scope.deleteMDPopover.hide();
             });
 
     }
@@ -976,6 +981,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                     });
                 }
             }).error(function(err) {
+                $ionicLoading.hide();
                 var alert = $ionicPopup.alert({
                     title: 'Error',
                     template: 'Connection Error'
@@ -1015,6 +1021,136 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                 $ionicLoading.hide();
             })
     }
+
+
+    $scope.getDates = function() {
+        // if (!$scope.showDateCard) {
+            $scope.init();
+            var dummy = {
+                'id': $scope.profile.id
+            }
+            $ionicLoading.show();
+            admin.getDates(dummy)
+                .success(function(data) {
+                    console.log(data);
+                    if (data.status == 1) {
+                        $scope.dates = data.message;
+                        $scope.dates.forEach(function(list) {
+                            var temp = new Date(list.date).toDateString();
+                            list.dateString = temp;
+                        });
+                        $scope.showDateCard = true;
+                    } else {
+                        var alert = $ionicPopup.alert({
+                            title: 'Error',
+                            template: data.message
+                        });
+                    }
+                }).error(function(err) {
+                    console.log(err);
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: 'Connection Error'
+                    });
+                }).then(function() {
+                    $ionicLoading.hide();
+                })
+        // }
+    }
+
+
+    $scope.addDatePopover = $ionicPopover.fromTemplateUrl('templates/forms/addDateForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.addDatePopover = popover;
+    });
+
+    $scope.deleteDatePopover = $ionicPopover.fromTemplateUrl('templates/forms/deleteDateForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.deleteDatePopover = popover;
+    });
+
+    $scope.showDeleteDatePopover = function() {
+        $scope.deleteDatePopover.show();
+    }
+
+    $scope.deleteDate = function() {
+        $scope.deleteDatePopover.hide();
+        $ionicLoading.show();
+        $scope.deleteDateData = [];
+        $scope.dates.forEach(function(list) {
+            if (list.checked && list.valid==2)
+                $scope.deleteDateData.push(list.date);
+        });
+        var dummy = {
+            'id': $scope.profile.id,
+            'date[]': $scope.deleteDateData
+        }
+        console.log(dummy);
+        admin.removeMessLeave(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.getDates();
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.deleteDatePopover.hide();
+            });
+
+    }
+
+    $scope.addDates = function() {
+        $ionicLoading.show();
+        $scope.addDateData = [];
+        $scope.dates.forEach(function(list) {
+            if (list.checked && list.valid==1)
+                $scope.addDateData.push(list.date);
+        });
+        var dummy = {
+            'id': $scope.profile.id,
+            'date[]': $scope.addDateData
+        }
+        console.log(dummy);
+        admin.addMessLeave(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.getDates();
+                } else {
+                    var alert = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+                $scope.addDatePopover.hide();
+            });
+    }
+
+    $scope.showAddDatePopover = function() {
+        $scope.addDatePopover.show();
+    }
+
 
 })
 

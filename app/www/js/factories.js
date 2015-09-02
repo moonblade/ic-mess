@@ -115,7 +115,18 @@ angular.module('Mess.factories', [])
         },
         getMDCandidates: function(data) {
             return generic.generic(admin + 'getUsersGreater/0/3', data);
-        }
+        },
+        getDates: function(data) {
+            return generic.generic(admin + 'getDates/', data);
+        },
+        addMessLeave: function(data) {
+            return generic.generic(admin + 'addMessLeave/', data);
+        },
+        removeMessLeave: function(data) {
+            return generic.generic(admin + 'removeMessLeave/', data);
+        },
+        
+
 
     }
 })

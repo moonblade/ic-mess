@@ -1,0 +1,26 @@
+<form name="deleteDateForm">
+    <div class="list card vertical_center">
+        <div>
+            <label class="item item-input item-icon-right">
+                <input type="text" ng-model="searchText" placeholder="Filter">
+                <i class="icon ion-android-search"></i>
+            </label>
+        </div>
+        <!-- Mess Secs -->
+        <div id="secList">
+            <div ng-repeat="date in dates | filter:searchText">
+                <div class="item item-checkbox" ng-if="date.valid==2">
+                    <label class="checkbox">
+                        <input ng-model="date.checked" type="checkbox" value="on">
+                    </label>
+                    {{date.dateString}}
+                </div>
+            </div>
+        </div>
+        <!-- Buttons -->
+        <span class="item button-bar">
+            <!-- Submit -->
+            <button ng-click="deleteDate()" ng-disabled="deleteDateForm.$invalid" class="button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">Submit</button>
+        </span>
+    </div>
+</form>

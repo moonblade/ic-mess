@@ -5,13 +5,13 @@
                 <h4>Present Count</h4>
             </div>
             <div ng-show="!nodata">
-                <div id="countPresent" style="float: right;">
-                    <h4>{{tomorrowCount}}</h4>
+                <div style="float: right;">
+                    <span class="badge badge-assertive">{{tomorrowCount}}</span>
                 </div>
                 <a ng-repeat="day in countDate" class="">
                     <span class="item">
                     {{day.relative}} ({{day.String}}) : {{day.count}}
-                </span>
+                    </span>
                 </a>
             </div>
             <div ng-show="nodata">
@@ -23,10 +23,18 @@
                 </a>
             </div>
         </div>
-        <div class="card stable-bg list padding" ng-show="!(showPendingCard || showAcceptedCard || showBarredCard)" ng-click="getPending()">
-            <h4>Show Student List</h4>
+        <div class="item tabs tabs-secondary tabs-icon-left">
+            <a class="tab-item" ng-click="getPending()" data-ink-color="#336699" data-ink-opacity="0.5">
+                <i class="icon ion-android-people"></i> Inmates
+            </a>
+            <a ng-show="profile.level>2" class="tab-item" ng-click="getMDs()" data-ink-color="#336699" data-ink-opacity="0.5">
+                <i class="icon ion-person"></i> MDs
+            </a>
+            <a ng-show="profile.level>2" class="tab-item" ng-click="getDates()" data-ink-color="#336699" data-ink-opacity="0.5">
+                <i class="icon ion-calendar"></i> Dates
+            </a>
         </div>
-        <div class="card stable-bg list padding" ng-show="showCard">
+        <div class="card stable-bg list padding" ng-show="showInmateCard">
             <div class="item tabs tabs-secondary tabs-icon-left">
                 <a class="tab-item" ng-click="checkStatus=0" data-ink-color="#336699" data-ink-opacity="0.5">
                     <i class="icon ion-clock"></i> Pending
@@ -52,18 +60,7 @@
                 </a>
             </div>
         </div>
-        <div class="card stable-bg list padding" ng-show="!showMDList" ng-click="getMDs()">
-            <h4>Show MD List</h4>
-        </div>
         <div class="card stable-bg list padding" ng-show="showMDList">
-            <h4>Mess MD</h4>
-            <div ng-repeat="md in MDList">
-                <span class="item">
-                    <div>
-                        {{md.name}}  ({{md.branch}})
-                    </div>
-                </span>
-            </div>
             <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
                 <a class="tab-item" ng-click="showAddMDPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
                     <i class="icon ion-plus-round"></i> Add
@@ -71,6 +68,28 @@
                 <a class="tab-item" ng-click="showDeleteMDPopover()" data-ink-color="#336699" data-ink-opacity="0.5">
                     <i class="icon ion-close-round"></i> Remove
                 </a>
+            </div>
+            <div ng-repeat="md in MDList">
+                <span class="item">
+                    <div>
+                        {{md.name}}  ({{md.branch}})
+                    </div>
+                </span>
+            </div>
+        </div>
+        <div class="card stable-bg list padding" ng-show="showDateCard">
+            <div ng-show="profile.level>2" class="item tabs tabs-secondary tabs-icon-left">
+                <a class="tab-item" ng-click="showAddDatePopover()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-plus-round"></i> Add
+                </a>
+                <a class="tab-item" ng-click="showDeleteDatePopover()" data-ink-color="#336699" data-ink-opacity="0.5">
+                    <i class="icon ion-close-round"></i> Remove
+                </a>
+            </div>
+            <div ng-repeat="date in dates">
+                <span ng-if="date.valid==1 || date.valid==0" class="item">
+                        {{date.dateString}}
+                </span>
             </div>
         </div>
     </ion-content>

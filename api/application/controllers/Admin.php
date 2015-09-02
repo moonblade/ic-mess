@@ -449,4 +449,157 @@ class Admin extends CI_Controller {
 		}
 		print json_encode($result);
 	}
+
+	public function addMessLeave()
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user = new User();
+		$mess = new Mess();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			$flag=1;
+			$result['status']=0;
+			$result['message']="Database Error";
+			$date=$request['date[]'];
+			$toInsert['mid']=$mess->getCurrentMid();
+			foreach($date as $toInsert['date'])
+			{
+				if($toInsert['mid']!=0)
+					if(!$this->db->insert('visibility',$toInsert))
+						$flag=0;
+			}
+			if($flag)
+			{
+				$result['status']=1;
+				$result['message']="Successfully Inserted";
+			}
+		}
+		print json_encode($result);
+	}
+
+
+	public function removeMessLeave()
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user = new User();
+		$mess = new Mess();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			$currentMess=$mess->getMessDetails();
+			$array['mid']=$currentMess['mid'];
+			$mid=$currentMess['mid'];
+			$start=$currentMess['start'];
+			$oldNod=$currentMess['no_of_days'];
+			for($i=0;$i<$oldNod;$i++)
+			{
+				$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+				$array['date']=$date;
+				$query=$this->db->get_where('visibility',$array);
+				if($query->row_array())
+				{
+					$oldNod++;
+				}
+			}
+
+			$toDelete['mid']=$mess->getCurrentMid();
+			$flag=1;
+			$result['status']=0;
+			$result['message']="Database Error";
+			$date=$request['date[]'];
+			foreach($date as $toDelete['date'])
+			{
+				if($toDelete['mid']!=0)
+					if(!$this->db->delete('visibility',$toDelete))
+						$flag=0;
+			}
+			if($flag)
+			{
+				$currentMess=$mess->getMessDetails();
+				$newNod=$currentMess['no_of_days'];
+				for($i=0;$i<$newNod;$i++)
+				{
+					$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+					$array['date']=$date;
+					$query=$this->db->get_where('visibility',$array);
+					if($query->row_array())
+					{
+						$newNod++;
+					}
+				}
+				for($i=$newNod; $i<=$oldNod;$i++)
+				{
+					$toDelete['date']=$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+					$this->db->delete('visibility',$toDelete);
+				}
+				$result['status']=1;
+				$result['message']="Successfully Removed";
+			}
+
+		}
+
+		print json_encode($result);
+	}
+
+
+	function getDates()
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user = new User();
+		$mess = new Mess();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			$currentMess=$mess->getMessDetails();
+			$array['mid']=$currentMess['mid'];
+			$mid=$currentMess['mid'];
+			$start=$currentMess['start'];
+			$nod=$currentMess['no_of_days'];
+			for($i=0;$i<$nod;$i++)
+			{
+				$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+				$array['date']=$date;
+				$query=$this->db->get_where('visibility',$array);
+				if(!$query->row_array())
+				{
+					$temp['date']=$date;
+					if($this->beforeToday($date))
+						$temp['valid']=0;
+					else
+						$temp['valid']=1;
+					$days[]=$temp;
+				}	
+				else
+				{
+					$temp['date']=$date;
+					$temp['valid']=2;
+					$days[]=$temp;
+					$nod++;
+				}
+			}
+			$result['status']=1;
+			$result['message']=$days;
+		}
+
+		print json_encode($result);
+	}
+
+	private function beforeToday($date)
+	{
+		$today=date('Y-m-d');
+		$today=strtotime($today);
+		if(strtotime($date)<=$today)
+			return 1;
+		return 0;
+	}
 }

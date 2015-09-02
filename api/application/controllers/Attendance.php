@@ -57,27 +57,22 @@ class Attendance extends CI_Controller {
 
 		$result['status']=0;
 		$result['message']="Could not find any Entry";
-		if($currentMid==0)
-			$currentMid=$mess->getCurrentMid(0);
-		if($currentMid!=0)
+		$currentMess=$mess->getMessDetails($currentMid);
+		$array['mid']=$currentMess['mid'];
+		$mid=$currentMess['mid'];
+		$start=$currentMess['start'];
+		$nod=$currentMess['no_of_days'];
+		$daysAbsent=$this->db->get_where('attendance',$array)->result();
+		for($i=0;$i<$nod;$i++)
 		{
-			$currentMess=$mess->getMessDetails($currentMid);
-			$array['mid']=$currentMess['mid'];
-			$mid=$currentMess['mid'];
-			$start=$currentMess['start'];
-			$nod=$currentMess['no_of_days'];
-			$daysAbsent=$this->db->get_where('attendance',$array)->result();
-			for($i=0;$i<$nod;$i++)
-			{
-				$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
-				if($this->dateAbsent($date,$daysAbsent))
-					$days[$date]=0;
-				else			
-					$days[$date]=1;
-			}
-			$result['status']=1;
-			$result['message']=$days;
+			$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+			if($this->dateAbsent($date,$daysAbsent))
+				$days[$date]=0;
+			else			
+				$days[$date]=1;
 		}
+		$result['status']=1;
+		$result['message']=$days;
 		if($op==0)
 			print json_encode($result);
 		return $result;

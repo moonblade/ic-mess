@@ -259,14 +259,15 @@ class Admin extends CI_Controller {
 			else
 			{
 				$currentMess=$mess->getMessDetails();
+				$start=$currentMess['start'];
 				$oldNod=$currentMess['no_of_days'];
 				$newNod=$array['no_of_days'];
 				$toDelete['mid']=$mid;
 				for($i=0;$i<$newNod;$i++)
 				{
 					$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
-					$array['date']=$date;
-					$query=$this->db->get_where('visibility',$array);
+					$tempo['date']=$date;
+					$query=$this->db->get_where('visibility',$tempo);
 					if($query->row_array())
 					{
 						$newNod++;
@@ -275,14 +276,14 @@ class Admin extends CI_Controller {
 				for($i=0;$i<$oldNod;$i++)
 				{
 					$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
-					$array['date']=$date;
-					$query=$this->db->get_where('visibility',$array);
+					$tempo['date']=$date;
+					$query=$this->db->get_where('visibility',$tempo);
 					if($query->row_array())
 					{
 						$oldNod++;
 					}
 				}
-				for($i=$newNod; $i<=$oldNod;$i++)
+				for($i=$oldNod; $i<=$newNod;$i++)
 				{
 					$toDelete['date']=$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
 					$this->db->delete('visibility',$toDelete);

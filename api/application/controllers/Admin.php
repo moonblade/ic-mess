@@ -258,6 +258,36 @@ class Admin extends CI_Controller {
 			}
 			else
 			{
+				$currentMess=$mess->getMessDetails();
+				$oldNod=$currentMess['no_of_days'];
+				$newNod=$array['no_of_days'];
+				$toDelete['mid']=$mid;
+				for($i=0;$i<$newNod;$i++)
+				{
+					$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+					$array['date']=$date;
+					$query=$this->db->get_where('visibility',$array);
+					if($query->row_array())
+					{
+						$newNod++;
+					}
+				}
+				for($i=0;$i<$oldNod;$i++)
+				{
+					$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+					$array['date']=$date;
+					$query=$this->db->get_where('visibility',$array);
+					if($query->row_array())
+					{
+						$oldNod++;
+					}
+				}
+				for($i=$newNod; $i<=$oldNod;$i++)
+				{
+					$toDelete['date']=$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
+					$this->db->delete('visibility',$toDelete);
+					$this->db->delete('attendance',$toDelete);
+				}
 				$this->db->where('mid',$mid);
 			    $this->db->update('mess',$array);
 		   		$result['status']=1;

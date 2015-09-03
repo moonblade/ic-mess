@@ -422,7 +422,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                 $ionicLoading.hide();
                 $scope.details.startDate = new Date($scope.details.start);
                 $scope.details.endDate = new Date($scope.details.start);
-                $scope.details.endDate.setDate($scope.details.startDate.getDate() + parseInt($scope.details.no_of_days));
+                $scope.details.endDate.setDate($scope.details.startDate.getDate() + parseInt($scope.details.no_of_days)-1);
                 $scope.details.endDate = new Date($scope.details.endDate).toDateString();
                 $scope.details.startDate = new Date($scope.details.startDate).toDateString();
             });

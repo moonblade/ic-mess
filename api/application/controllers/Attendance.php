@@ -43,7 +43,7 @@ class Attendance extends CI_Controller {
 		}
 	}
 	
-	public function view($id=0,$currentMid=0,$op=0)
+	public function view($id=0,$currentMid=0,$op=0,$type=0)
 	{
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);
@@ -71,10 +71,20 @@ class Attendance extends CI_Controller {
 			$query=$this->db->get_where('visibility',$visibility);
 			if(!$query->row_array())
 			{
-				if($this->dateAbsent($date,$daysAbsent))
-					$days[$date]=0;
-				else			
-					$days[$date]=1;
+				if($type==0)
+				{
+					if($this->dateAbsent($date,$daysAbsent))
+						$days[$date]=0;
+					else			
+						$days[$date]=1;
+				}
+				else
+				{
+					if($this->dateAbsent($date,$daysAbsent))
+						$days[$date]="Yes";
+					else			
+						$days[$date]="No";					
+				}
 			}	
 			else
 			{
@@ -181,7 +191,7 @@ class Attendance extends CI_Controller {
 		else
 			$array['date']=$date;
 		$currenttime=(int)date('Gis');
-		$mark=203000;
+		$mark=210000;
 		$markdate=date('Y-m-d');
 		if($currenttime>$mark)
 			$markdate=date('Y-m-d',strtotime($markdate.' +1 days'));

@@ -194,11 +194,18 @@ class Admin extends CI_Controller {
 			else{
 				$result['message']="Database Error";
 				$row['no_of_days']=$nod;
-				if($this->db->insert('mess', $row))
+				if($row['no_of_days']<1)
 				{
-					$result['status']=1;
-					$result['message']="Successfully Inserted";
-				}	
+					$result['message']="days should be greater than 0";
+				}
+				else
+				{
+					if($this->db->insert('mess', $row))
+					{
+						$result['status']=1;
+						$result['message']="Successfully Inserted";
+					}	
+				}
 			}
 
 		}
@@ -245,10 +252,17 @@ class Admin extends CI_Controller {
 			$array['establishment']=$request['establishment'];
 			$array['cost_per_day']=$request['cost_per_day'];
 			$array['no_of_days']=$request['no_of_days'];
-			$this->db->where('mid',$mid);
-		    $this->db->update('mess',$array);
-	   		$result['status']=1;
-		    $result['message']="Successfully Updated";	
+			if($array['no_of_days']<1)
+			{
+				$result['message']="days should be greater than 0";
+			}
+			else
+			{
+				$this->db->where('mid',$mid);
+			    $this->db->update('mess',$array);
+		   		$result['status']=1;
+			    $result['message']="Successfully Updated";	
+			}
 		}
 		print json_encode($result);
 	}
@@ -389,7 +403,7 @@ class Admin extends CI_Controller {
 			$result['message']="Database Error";
 			if($mid==0)
 				$mid=$mess->getCurrentMid();
-			$query=$this->db->query('select id from inmate where mid='.$mid.' and status=1');
+			$query=$this->db->query('select id from inmate natural join users where mid='.$mid.' and status=1 order by name');
 			$temp=$query->result();
 			if($temp)
 			{
@@ -409,7 +423,7 @@ class Admin extends CI_Controller {
 					$attendance=new Attendance($id);
 					$currentMess=$mess->getMessDetails();
 					$nod=$attendance->nodPresent($id,$mid);
-					$days=$attendance->view($id,$mid,1);
+					$days=$attendance->view($id,$mid,1,1);
 					if($days['status']==1)
 						$person->daysPresent=$days['message'];
 					$person->nodPresent=$nod;

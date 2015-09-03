@@ -81,9 +81,9 @@ class Attendance extends CI_Controller {
 				else
 				{
 					if($this->dateAbsent($date,$daysAbsent))
-						$days[$date]="Yes";
+						$days[$date]="No";
 					else			
-						$days[$date]="No";					
+						$days[$date]="Yes";					
 				}
 			}	
 			else

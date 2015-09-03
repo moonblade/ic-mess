@@ -403,7 +403,7 @@ class Admin extends CI_Controller {
 			$result['message']="Database Error";
 			if($mid==0)
 				$mid=$mess->getCurrentMid();
-			$query=$this->db->query('select id from inmate natural join users where mid='.$mid.' and status=1 order by name');
+			$query=$this->db->query('select id,amount from inmate natural join users where mid='.$mid.' and (status=1 or status=2) order by name');
 			$temp=$query->result();
 			if($temp)
 			{
@@ -427,7 +427,8 @@ class Admin extends CI_Controller {
 					if($days['status']==1)
 						$person->daysPresent=$days['message'];
 					$person->nodPresent=$nod;
-					$person->cost=$currentMess['establishment']+$person->nodPresent*$currentMess['cost_per_day'];
+					$person->totalCost=$currentMess['establishment']+$person->nodPresent*$currentMess['cost_per_day'];
+					$person->costDue=$person->totalCost-$temp['amount'];
 				}
 				$result['status']=1;
 				$temp = json_decode(json_encode($temp),true);

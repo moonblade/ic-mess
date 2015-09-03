@@ -444,7 +444,7 @@ class Admin extends CI_Controller {
 				    {
 				    	$prefix=['id','name','branch'];
 				    	$Keys=array_keys($line['daysPresent']);
-				    	$suffix=['nod','cost'];
+				    	$suffix=['nod','totalCost','costDue'];
 				    	$Keys=array_merge($prefix,$Keys,$suffix);
 				        fputcsv($f, $Keys);
 				        $Keys = array_flip($Keys);
@@ -457,7 +457,8 @@ class Admin extends CI_Controller {
 				        $line_array[]=($value);
 				    }
 				    $line_array[]=($line['nodPresent']);
-				    $line_array[]=($line['cost']);
+				    $line_array[]=($line['totalCost']);
+				    $line_array[]=($line['costDue']);
 				    fputcsv($f, $line_array);
 				}
 				$result['message']=''.$mid.'.csv';

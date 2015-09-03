@@ -21,6 +21,9 @@ class User extends CI_Controller {
 		$row=$request;
 		if(array_key_exists('pass', $row))
 			$row['pass']=md5($row['pass']);
+		if(array_key_exists('branch', $row))
+			if($row['branch']=='CIV')
+				$row['branch']='CE';
 		// name, email, pass, branch, address, dob, father, mother, phone, phonedad, phonemom, bloodgroup
 
 		$result['status']=0;

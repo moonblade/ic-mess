@@ -107,8 +107,71 @@ class Admin extends CI_Controller {
 	    $result['message']="None Found";
 	    $result['message']=$request;
 	    $mess=new Mess();
-	    // $id=$request['acceptId'];
-	    foreach ($request['acceptId[]'] as $id) 
+	    $id=$request['acceptId'];
+    	$attendance = new Attendance($id,1);
+	    $currentMess = $mess->getMessDetails();
+	    if($mid==0)
+	    	$mid=$mess->getCurrentMid();
+	    if($status==1)
+	    {
+	    	// set previous days absent if status is already 0
+	    	$this->db->where('id',$id);
+	    	$query=$this->db->get_where('inmate',array('id'=>$id,'mid'=>$currentMess['mid']));
+	    	$oldInmate=$query->row_array();
+	    	$oldStatus=$oldInmate['status'];
+	    	$count=0;
+	    	if($oldStatus==0)
+	    	{
+		    	$today = date('Y-m-d');
+		    	$till = date('Y-m-d',strtotime($today));
+		    	$from = date('Y-m-d',strtotime($currentMess['start']));
+		    	$pointer = $from;
+		    	while($pointer<=$till)
+		    	{
+		    		$this->db->insert('attendance',array('id'=>$id,'date'=>$pointer,'mid'=>$currentMess['mid']));
+			    	$pointer = date('Y-m-d',strtotime($pointer.' +1 days'));
+		    	}	    		
+	    	}
+	    	// set rest of the days as present
+		    $this->db->where('id',$id);
+		    $this->db->update('inmate',array('status'=>$status));
+	   		if($this->db->affected_rows())
+	   		{
+		   		$result['status']=1;
+			    $result['message']="Successfully Updated".$count;	
+	   		}
+	    	$today = date('Y-m-d');
+	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
+	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$this->actualNod($currentMess).' days'));
+	    	$pointer = $tomorrow;
+	    	while($pointer<=$till)
+	    	{
+	    		$attendance->setPresent($id,$pointer,1);
+		    	$pointer = date('Y-m-d',strtotime($pointer.' +1 days'));
+	    	}
+	    }
+	    else if($status==2)
+	    {
+	    	// set rest of the days as absent
+	    	$today = date('Y-m-d');
+	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
+	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$this->actualNod($currentMess).' days'));
+	    	$pointer = $tomorrow;
+	    	while(strtotime($pointer)<=strtotime($till))
+	    	{
+	    		$result['debug']="boo";
+	    		$attendance->setAbsent($id,$pointer,1);
+		    	$pointer = date('Y-m-d',strtotime($pointer.' +1 days'));
+	    	}
+		    $this->db->where('id',$id);
+		    $this->db->update('inmate',array('status'=>$status));
+	   		if($this->db->affected_rows())
+	   		{
+		   		$result['status']=1;
+			    $result['message']="Successfully Updated";	
+	   		}
+	    }
+	    else
 	    {
 	    	$attendance = new Attendance($id,1);
 		    $currentMess = $mess->getMessDetails();
@@ -706,5 +769,4 @@ class Admin extends CI_Controller {
 			}
 			return $Nod;
 	}
-
 }

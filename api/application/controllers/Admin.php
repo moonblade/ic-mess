@@ -106,27 +106,28 @@ class Admin extends CI_Controller {
 	    $result['status']=0;
 	    $result['message']="None Found";
 	    $mess=new Mess();
+	    $id=$request['acceptId'];
+    	$attendance = new Attendance($id,1);
 	    $currentMess = $mess->getMessDetails();
 	    if($mid==0)
 	    	$mid=$mess->getCurrentMid();
-	    $id=$request['acceptId'];
 	    if($status==1)
 	    {
-	    	// set previous days present if status is already 0
+	    	// set previous days absent if status is already 0
 	    	$this->db->where('id',$id);
-	    	$query=$this->db->get_where('inmate',array('id'=>$id));
+	    	$query=$this->db->get_where('inmate',array('id'=>$id,'mid'=>$currentMess['mid']));
 	    	$oldInmate=$query->row_array();
 	    	$oldStatus=$oldInmate['status'];
+	    	$count=0;
 	    	if($oldStatus==0)
 	    	{
 		    	$today = date('Y-m-d');
-		    	$attendance = new Attendance($id);
 		    	$till = date('Y-m-d',strtotime($today));
 		    	$from = date('Y-m-d',strtotime($currentMess['start']));
 		    	$pointer = $from;
 		    	while($pointer<=$till)
 		    	{
-		    		$attendance->setPresent($id,$pointer,1);
+		    		$this->db->insert('attendance',array('id'=>$id,'date'=>$pointer,'mid'=>$currentMess['mid']));
 			    	$pointer = date('Y-m-d',strtotime($pointer.' +1 days'));
 		    	}	    		
 	    	}
@@ -136,10 +137,9 @@ class Admin extends CI_Controller {
 	   		if($this->db->affected_rows())
 	   		{
 		   		$result['status']=1;
-			    $result['message']="Successfully Updated";	
+			    $result['message']="Successfully Updated".$count;	
 	   		}
 	    	$today = date('Y-m-d');
-	    	$attendance = new Attendance($id);
 	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
 	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$this->actualNod($currentMess).' days'));
 	    	$pointer = $tomorrow;
@@ -153,9 +153,8 @@ class Admin extends CI_Controller {
 	    {
 	    	// set rest of the days as absent
 	    	$today = date('Y-m-d');
-	    	$attendance = new Attendance($id);
 	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
-	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$actualNod($currentMess).' days'));
+	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$this->actualNod($currentMess).' days'));
 	    	$pointer = $tomorrow;
 	    	while(strtotime($pointer)<=strtotime($till))
 	    	{

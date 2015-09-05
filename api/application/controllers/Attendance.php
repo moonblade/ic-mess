@@ -145,7 +145,7 @@ class Attendance extends CI_Controller {
 		else
 			$array['date']=$date;
 		$currenttime=(int)date('Gis');
-		$mark=203000;
+		$mark=210000;
 		$markdate=date('Y-m-d');
 		if($currenttime>$mark)
 			$markdate=date('Y-m-d',strtotime($markdate.' +1 days'));

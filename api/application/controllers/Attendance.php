@@ -106,7 +106,7 @@ class Attendance extends CI_Controller {
 	public function nodPresent($id,$mid)
 	{
 		$mess = new Mess();
-		$query=$this->db->query('select count(*) as count from attendance where id='.$id.' and mid='.$mid);
+		$query=$this->db->query('select count(*) as count from attendance where id='.$id.' and mid='.$mid.' and date not in (select date from visibility where mid='.$mid.')');
 		$temp=$query->row_array();
 		$nod=$mess->getNod();
 		if($temp)
@@ -233,7 +233,7 @@ class Attendance extends CI_Controller {
 		print json_encode($result);
 	}
 
-
+	
 }
 
 /* End of file Attendance.php */

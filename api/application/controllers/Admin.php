@@ -41,7 +41,7 @@ class Admin extends CI_Controller {
 		{
 			$result['message']="Invalid Date";
 		}			
-		else if(date($array['date'])>date('Y-m-d',strtotime($currentMess['start'].' +'.$currentMess['no_of_days'].' days')))
+		else if(date($array['date'])>date('Y-m-d',strtotime($currentMess['start'].' +'.$this->actualNod($currentMess).' days')))
 		{
 			$result['status']=2;
 			$result['message']="Mess complete. Create new mess.";
@@ -112,6 +112,24 @@ class Admin extends CI_Controller {
 	    $id=$request['acceptId'];
 	    if($status==1)
 	    {
+	    	// set previous days present if status is already 0
+	    	$this->db->where('id',$id);
+	    	$query=$this->db->get_where('inmate',array('id'=>$id));
+	    	$oldInmate=$query->row_array();
+	    	$oldStatus=$oldInmate['status'];
+	    	if($oldStatus==0)
+	    	{
+		    	$today = date('Y-m-d');
+		    	$attendance = new Attendance($id);
+		    	$till = date('Y-m-d',strtotime($today));
+		    	$from = date('Y-m-d',strtotime($currentMess['start']));
+		    	$pointer = $from;
+		    	while($pointer<=$till)
+		    	{
+		    		$attendance->setPresent($id,$pointer,1);
+			    	$pointer = date('Y-m-d',strtotime($pointer.' +1 days'));
+		    	}	    		
+	    	}
 	    	// set rest of the days as present
 		    $this->db->where('id',$id);
 		    $this->db->update('inmate',array('status'=>$status));
@@ -123,7 +141,7 @@ class Admin extends CI_Controller {
 	    	$today = date('Y-m-d');
 	    	$attendance = new Attendance($id);
 	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
-	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$currentMess['no_of_days'].' days'));
+	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$this->actualNod($currentMess).' days'));
 	    	$pointer = $tomorrow;
 	    	while($pointer<=$till)
 	    	{
@@ -137,7 +155,7 @@ class Admin extends CI_Controller {
 	    	$today = date('Y-m-d');
 	    	$attendance = new Attendance($id);
 	    	$tomorrow = date('Y-m-d',strtotime($today.' +1 days'));
-	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$currentMess['no_of_days'].' days'));
+	    	$till = date('Y-m-d',strtotime($currentMess['start'].' +'.$actualNod($currentMess).' days'));
 	    	$pointer = $tomorrow;
 	    	while(strtotime($pointer)<=strtotime($till))
 	    	{
@@ -184,7 +202,7 @@ class Admin extends CI_Controller {
 			$offsetDateCorrection='1';
 			$row['start']=date('Y-m-d',strtotime($request['start'].' +'.$offsetDateCorrection.' days'));
 			$current=$mess->getMessDetails();
-			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days')))
+			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$actualNod($currentMess).' days')))
 			{
 				$result['message']="Date clashes with current mess";
 			}
@@ -224,6 +242,7 @@ class Admin extends CI_Controller {
 		$id=$request['id'];
 		if($user->isMD($id))
 		{
+			$result['message']="None Found";
 			$array['level >']=$level;
 			$array['level <']=$highLevel;
 			$this->db->select('id, name, branch');
@@ -261,29 +280,9 @@ class Admin extends CI_Controller {
 			{
 				$currentMess=$mess->getMessDetails();
 				$start=$currentMess['start'];
-				$oldNod=$currentMess['no_of_days'];
-				$newNod=$array['no_of_days'];
+				$oldNod=$this->actualNod($currentMess);
+				$newNod=$this->actualNod(array('no_of_days'=>$array['no_of_days'],'start'=>$start));
 				$toDelete['mid']=$mid;
-				for($i=0;$i<$newNod;$i++)
-				{
-					$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
-					$tempo['date']=$date;
-					$query=$this->db->get_where('visibility',$tempo);
-					if($query->row_array())
-					{
-						$newNod++;
-					}
-				}
-				for($i=0;$i<$oldNod;$i++)
-				{
-					$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
-					$tempo['date']=$date;
-					$query=$this->db->get_where('visibility',$tempo);
-					if($query->row_array())
-					{
-						$oldNod++;
-					}
-				}
 				for($i=$oldNod; $i<=$newNod;$i++)
 				{
 					$toDelete['date']=$date=date('Y-m-d',strtotime($start.' +'.$i.' days'));
@@ -652,5 +651,21 @@ class Admin extends CI_Controller {
 		if(strtotime($date)<=$today)
 			return 1;
 		return 0;
+	}
+
+	public function actualNod($mess)
+	{
+	    	$Nod=$mess['no_of_days'];
+			for($i=0;$i<$Nod;$i++)
+			{
+				$date=date('Y-m-d',strtotime($mess['start'].' +'.$i.' days'));
+				$tempo['date']=$date;
+				$query=$this->db->get_where('visibility',$tempo);
+				if($query->row_array())
+				{
+					$Nod++;
+				}
+			}
+			return $Nod;
 	}
 }

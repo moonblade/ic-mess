@@ -452,7 +452,7 @@ class Admin extends CI_Controller {
 						$person->name=$row['name'];
 						$person->branch=$row['branch'];
 					}
-					$attendance=new Attendance($id);
+					$attendance=new Attendance($id,1);
 					$currentMess=$mess->getMessDetails();
 					$nod=$attendance->nodPresent($id,$mid);
 					$days=$attendance->view($id,$mid,1,1);

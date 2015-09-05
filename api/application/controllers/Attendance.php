@@ -10,36 +10,40 @@ class Attendance extends CI_Controller {
 		print "Attendance functions";
 	}
 
-	public function __construct($id=0)
+	public function __construct($id=0,$op=0)
 	{
 		parent::__construct();
 		$result['status']=0;
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);	
+	    $origId=$id;
 	    if($id==0)
 			$id=$request['id'];
 		$user=new User();
 		$isInCurrentMess=$user->isInCurrentMess($id);
-		if($isInCurrentMess==null)
+		if($op==0)
 		{
-			$result['status']=2;
-			$result['message']="You haven't enrolled in the current mess yet";
-			print json_encode($result);
-			exit();
-		}
-		else if($isInCurrentMess==0)
-		{
-			$result['status']=3;
-			$result['message']="You haven't been Accepted to the current mess yet";
-			print json_encode($result);
-			exit();
-		}
-		else if($isInCurrentMess==2)
-		{
-			$result['status']=4;
-			$result['message']="You have been barred from the mess (Mess Out)";
-			print json_encode($result);
-			exit();
+			if($isInCurrentMess==null)
+			{
+				$result['status']=2;
+				$result['message']="You haven't enrolled in the current mess yet";
+				print json_encode($result);
+				exit();
+			}
+			else if($isInCurrentMess==0)
+			{
+				$result['status']=3;
+				$result['message']="You haven't been Accepted to the current mess yet";
+				print json_encode($result);
+				exit();
+			}
+			else if($isInCurrentMess==2)
+			{
+				$result['status']=4;
+				$result['message']="You have been barred from the mess (Mess Out)";
+				print json_encode($result);
+				exit();
+			}
 		}
 	}
 	

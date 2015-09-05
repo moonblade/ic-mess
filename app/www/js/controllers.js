@@ -1280,7 +1280,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                 user.sendFeedback(dummy)
                     .success(function(data) {
                         console.log(data);
-                        if (data.message == 1) {
+                        if (data.status == 1) {
                             var alertPopup = $ionicPopup.alert({
                                 title: 'Success',
                                 template: data.message

@@ -180,8 +180,9 @@ class Admin extends CI_Controller {
 		if($user->isMD($id))
 		{
 			$today=date("Y-m-d");
-			$buffer='5';
-			$row['start']=$request['start'];
+			$buffer='10';
+			$offsetDateCorrection='1';
+			$row['start']=date('Y-m-d',strtotime($request['start'].' +'.$offsetDateCorrection.' days'));
 			$current=$mess->getMessDetails();
 			if(date($row['start'])<date('Y-m-d',strtotime($current['start'].' +'.$current['no_of_days'].' days')))
 			{
@@ -213,7 +214,7 @@ class Admin extends CI_Controller {
 		print json_encode($result);
 	}
 
-	public function getUsersGreater($level=0, $highLevel=11)
+	public function getUsersGreater($level=0, $highLevel=4)
 	{
 		$result['status']=0;
 		$result['message']="Permission Denied";

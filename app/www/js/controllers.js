@@ -876,7 +876,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
             'id': $scope.profile.id,
             'start': $scope.createMessDetails.startDate
         };
-
+        console.log(dummy);
         $ionicLoading.show();
         admin.createMess(dummy, $scope.createMessDetails.no_of_days)
             .success(function(data) {

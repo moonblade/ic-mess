@@ -1308,7 +1308,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
 
 })
 
-.controller('InmateCtrl', function($scope, admin, $ionicLoading, $ionicPopup, $localstorage) {
+.controller('InmateCtrl', function($scope, admin, $ionicLoading, $ionicPopup, $localstorage, $ionicPopover) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = false;
@@ -1317,29 +1317,96 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     $scope.profile = $localstorage.getObject('profile');
     $scope.inmateList = {};
     $scope.searchText = "";
+    $scope.edit = {};
+    $scope.edit.toAddOrNot = true;
 
     var dummy = {
         'id': $scope.profile.id,
     };
     $ionicLoading.show();
-    admin.inmateDetails(dummy)
-        .success(function(data) {
-            console.log(data);
-            if (data.status == 1) {
-                $scope.inmateList = data.message;
-            } else {
+    $scope.inmateDetails = function() {
+        admin.inmateDetails(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.inmateList = data.message;
+                } else {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: data.message
+                    });
+                }
+            }).error(function() {
                 var alertPopup = $ionicPopup.alert({
                     title: 'Error',
-                    template: data.message
+                    template: 'Connection Error'
                 });
-            }
-        }).error(function() {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Error',
-                template: 'Connection Error'
+            }).then(function() {
+                $ionicLoading.hide();
             });
-        }).then(function() {
-            $ionicLoading.hide();
+    }
+    $scope.inmateDetails();
+
+
+    $scope.inmateCostPopover = $ionicPopover.fromTemplateUrl('templates/forms/inmateEditCostForm.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.inmateCostPopover = popover;
+    });
+
+    $scope.showinmateCostPopover = function(person) {
+        // $scope.edit.amount = parseInt(person.amount);
+        $scope.edit.amount = 0;
+        $scope.edit.bill = person.bill;
+        $scope.edit.id = person.id;
+        $scope.edit.toAddOrNot = true;
+        $scope.inmateCostPopover.show();
+    }
+
+    $scope.editCost = function() {
+        console.log($scope.editamount);
+        var confirm = $ionicPopup.confirm({
+            title: 'Confirm',
+            template: 'Are you sure you want to submit'
+        }).then(function(res) {
+            if (res) {
+                $scope.inmateCostPopover.hide();
+                $ionicLoading.show();
+                var dummy = {
+                    'id': $scope.profile.id,
+                    'amount': $scope.edit.amount,
+                    'bill': $scope.edit.bill
+                }
+                console.log(dummy);
+                var option = 0;
+                if (!$scope.edit.toAddOrNot)
+                    option = 1;
+                console.log(option);
+                admin.inmateEditCost(dummy, $scope.edit.id, option)
+                    .success(function(data) {
+                        console.log(data);
+                        if (data.status == 1) {
+                            $scope.inmateDetails();
+                        } else {
+                            var alert = $ionicPopup.alert({
+                                title: 'Error',
+                                template: data.message
+                            });
+                        }
+                    }).error(function(err) {
+                        $ionicLoading.hide();
+                        var alert = $ionicPopup.alert({
+                            title: 'Error',
+                            template: 'Connection Error'
+                        });
+                    }).then(function() {
+                        $ionicLoading.hide();
+                        $scope.inmateCostPopover.hide();
+                    });
+            }
         });
+    }
+
+
     ionic.material.ink.displayEffect();
 });

@@ -681,6 +681,40 @@ class Admin extends CI_Controller {
 		print json_encode($result);
 	}
 
+	public function inmateEditCost($changeId,$option=0)
+	{
+		$result['status']=0;
+		$result['message']="Permission Denied";
+		$postdata = file_get_contents("php://input");
+	    $request = json_decode($postdata, true);
+		$user = new User();
+		$id=$request['id'];
+		if($user->isMD($id))
+		{
+			$result['message']="Database Error";
+			$array['amount']=$request['amount'];
+			$array['bill']=$request['bill'];
+			$query=$this->db->get_where('inmate',array('id'=>$changeId));
+			$currentCost=0;
+			$person=$query->row_array();
+			if($person)
+			{
+				$currentCost=$person['amount'];
+			}
+			if($option==0)
+				$array['amount']+=$currentCost;
+
+			$this->db->where('id',$changeId);
+			$this->db->update('inmate',$array);
+			if($this->db->affected_rows())
+			{
+				$result['status']=1;
+				$result['message']="Successfully Altered";
+			}
+		}
+		print json_encode($result);
+	}
+
 	private function beforeToday($date)
 	{
 		$today=date('Y-m-d');

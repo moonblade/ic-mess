@@ -1,4 +1,4 @@
-<ion-view view-title="Inmates">
+<ion-view view-title="Inmate Cash Details">
     <ion-content ng-class="{expanded:isExpanded}">
         <div class="list padding">
             <ion-toggle ng-model="showOthers" toggle-class="item toggle-calm">Show Complete</ion-toggle>
@@ -7,14 +7,12 @@
                 <i class="icon ion-android-search"></i>
             </label>
             <div>
-                <a ng-repeat="person in inmateList | filter:searchText" ng-show="person.status==1 || showOthers" class="item item-icon-right item-icon-left ">
+                <a ng-click="showinmateCostPopover(person)" ng-repeat="person in inmateList | filter:searchText" ng-show="person.status==1 || showOthers" class="item item-icon-right item-icon-left ">
                     <!-- icon -->
-                    <div class="icon">
-                        <i ng-show="person.status==0" class="icon ion-clock">  </i> 
-                        <i ng-show="person.status==1" class="icon ion-checkmark-round">  </i> 
-                        <i ng-show="person.status==2" class="icon ion-close-round">  </i> 
-                    </div>
-                    {{person.name}} ({{person.branch}})
+                    <i ng-show="person.status==0" class="icon ion-clock"></i>
+                    <i ng-show="person.status==1 && showOthers" class="icon ion-checkmark-round"></i>
+                    <i ng-show="person.status==2" class="icon ion-close-round"></i> {{person.name}} ({{person.branch}})
+                    <p>{{person.bill}}</p>
                     <span class="badge badge-assertive">{{person.amount}}</span>
                 </a>
             </div>

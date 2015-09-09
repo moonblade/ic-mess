@@ -1,0 +1,21 @@
+<form name="inmateEditCost">
+    <div class="list card vertical_center">
+        <!-- Cost -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">Amount</span>
+            <input type="number" required ng-model="edit.amount" placeholder="Amount">
+        </label>
+        <!-- Bill Number -->
+        <label class="item item-input item-floating-label">
+            <span class="input-label">Bill</span>
+            <input type="text" ng-model="edit.bill" placeholder="Bill">
+        </label>
+        <!-- Add or not -->
+        <ion-toggle ng-model="edit.toAddOrNot" toggle-class="item toggle-calm">Add to Current Cost</ion-toggle>
+        <!-- Buttons -->
+        <span class="item button-bar">
+            <!-- Submit -->
+            <button ng-click="editCost()" ng-disabled="inmateEditCost.$invalid" class="button button-block button-calm ink activated" data-ink-color="#9DEAFF" data-ink-opacity="1">Submit</button>
+        </span>
+    </div>
+</form>

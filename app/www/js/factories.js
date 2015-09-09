@@ -128,6 +128,10 @@ angular.module('Mess.factories', [])
         inmateDetails: function(data) {
             return generic.generic(admin + 'inmateDetails/', data);
         },
+        inmateEditCost: function(data,id,op) {
+            console.log(admin + 'inmateEditCost/' + id+'/'+op);
+            return generic.generic(admin + 'inmateEditCost/'+ id+'/'+op, data);
+        },
         
 
 

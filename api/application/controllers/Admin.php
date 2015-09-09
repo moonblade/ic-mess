@@ -76,7 +76,7 @@ class Admin extends CI_Controller {
 	    	$mid=$mess->getCurrentMid();
 
 	    $array['mid']=$mid;
-	    $query=$this->db->get_where('inmate',$array);
+	    $query=$this->db->query('select id,mid,status from inmate natural join users where mid='.$mid.' order by name');
 	    $temp=$query->result();
 	    if($temp)
 	    {

@@ -422,7 +422,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                 $ionicLoading.hide();
                 $scope.details.startDate = new Date($scope.details.start);
                 $scope.details.endDate = new Date($scope.details.start);
-                $scope.details.endDate.setDate($scope.details.startDate.getDate() + parseInt($scope.details.no_of_days)-1);
+                $scope.details.endDate.setDate($scope.details.startDate.getDate() + parseInt($scope.details.no_of_days) - 1);
                 $scope.details.endDate = new Date($scope.details.endDate).toDateString();
                 $scope.details.startDate = new Date($scope.details.startDate).toDateString();
             });
@@ -712,33 +712,33 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     $scope.getMDs = function() {
         // if (!$scope.showMDList) {
 
-            $scope.init();
-            var dummy = {
-                'id': $scope.profile.id
-            }
-            $ionicLoading.show();
-            admin.getMDs(dummy)
-                .success(function(data) {
-                    console.log(data);
-                    if (data.status == 1) {
-                        $scope.MDList = data.message;
-                        $scope.showMDList = true;
-                    } else {
-                        var alert = $ionicPopup.alert({
-                            title: 'Error',
-                            template: data.message
-                        });
-                    }
-                }).error(function(err) {
-                    console.log(err);
+        $scope.init();
+        var dummy = {
+            'id': $scope.profile.id
+        }
+        $ionicLoading.show();
+        admin.getMDs(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.MDList = data.message;
+                    $scope.showMDList = true;
+                } else {
                     var alert = $ionicPopup.alert({
                         title: 'Error',
-                        template: 'Connection Error'
+                        template: data.message
                     });
-                }).then(function() {
-                    $ionicLoading.hide();
-                })
-        // }
+                }
+            }).error(function(err) {
+                console.log(err);
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+            })
+            // }
     }
 
     $scope.download = function(url) {
@@ -803,30 +803,32 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     $scope.getPending = function() {
         // if (!$scope.showInmateCard) {
 
-            $scope.init();
-            $ionicLoading.show();
-            var sendData = {
-                'id': $scope.profile.id
-            }
-            admin.getPending(sendData)
-                .success(function(data) {
-                    console.log(data);
-                    if (data.status == 1) {
-                        $scope.personList = data.message;
-                        $scope.showInmateCard = true;
-                    } else {
-                        $scope.noStudentExists = true;
-                    }
-                }).error(function(err) {
-                    $ionicLoading.hide();
-                    console.log(err);
-                }).then(function() {
-                    $ionicLoading.hide();
-                });
+        $scope.init();
+        $ionicLoading.show();
+        var sendData = {
+            'id': $scope.profile.id
+        }
+        admin.getPending(sendData)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.personList = data.message;
+                    $scope.showInmateCard = true;
+                } else {
+                    $scope.noStudentExists = true;
+                }
+            }).error(function(err) {
+                $ionicLoading.hide();
+                console.log(err);
+            }).then(function() {
+                $ionicLoading.hide();
+            });
         // }
     }
 
     $scope.changeStatus = function(id, name, status) {
+        var ids = [];
+        ids.push(id);
         if (status == 3)
             status = 1;
         var question = 'Accept ' + name + '?';
@@ -840,7 +842,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
                 $ionicLoading.show();
                 var dummy = {
                     'id': $scope.profile.id,
-                    'acceptId': id
+                    'acceptId[]': ids
                 }
                 admin.changeStatus(dummy, status)
                     .success(function(data) {
@@ -1027,37 +1029,37 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
 
     $scope.getDates = function() {
         // if (!$scope.showDateCard) {
-            $scope.init();
-            var dummy = {
-                'id': $scope.profile.id
-            }
-            $ionicLoading.show();
-            admin.getDates(dummy)
-                .success(function(data) {
-                    console.log(data);
-                    if (data.status == 1) {
-                        $scope.dates = data.message;
-                        $scope.dates.forEach(function(list) {
-                            var temp = new Date(list.date).toDateString();
-                            list.dateString = temp;
-                        });
-                        $scope.showDateCard = true;
-                    } else {
-                        var alert = $ionicPopup.alert({
-                            title: 'Error',
-                            template: data.message
-                        });
-                    }
-                }).error(function(err) {
-                    console.log(err);
+        $scope.init();
+        var dummy = {
+            'id': $scope.profile.id
+        }
+        $ionicLoading.show();
+        admin.getDates(dummy)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == 1) {
+                    $scope.dates = data.message;
+                    $scope.dates.forEach(function(list) {
+                        var temp = new Date(list.date).toDateString();
+                        list.dateString = temp;
+                    });
+                    $scope.showDateCard = true;
+                } else {
                     var alert = $ionicPopup.alert({
                         title: 'Error',
-                        template: 'Connection Error'
+                        template: data.message
                     });
-                }).then(function() {
-                    $ionicLoading.hide();
-                })
-        // }
+                }
+            }).error(function(err) {
+                console.log(err);
+                var alert = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'Connection Error'
+                });
+            }).then(function() {
+                $ionicLoading.hide();
+            })
+            // }
     }
 
 
@@ -1082,7 +1084,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
         $ionicLoading.show();
         $scope.deleteDateData = [];
         $scope.dates.forEach(function(list) {
-            if (list.checked && list.valid==2)
+            if (list.checked && list.valid == 2)
                 $scope.deleteDateData.push(list.date);
         });
         var dummy = {
@@ -1118,7 +1120,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
         $ionicLoading.show();
         $scope.addDateData = [];
         $scope.dates.forEach(function(list) {
-            if (list.checked && list.valid==1)
+            if (list.checked && list.valid == 1)
                 $scope.addDateData.push(list.date);
         });
         var dummy = {
@@ -1276,7 +1278,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
             template: 'Are you sure you want to submit'
         }).then(function(res) {
             if (res) {
-                $ionicLoading.hide();
+                $ionicLoading.show();
                 user.sendFeedback(dummy)
                     .success(function(data) {
                         console.log(data);
@@ -1304,4 +1306,39 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     }
     ionic.material.ink.displayEffect();
 
+})
+
+.controller('InmateCtrl', function($scope, admin, $ionicLoading, $ionicPopup, $localstorage) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = false;
+    $scope.$parent.setExpanded(false);
+    $scope.$parent.setHeaderFab(false);
+    $scope.profile = $localstorage.getObject('profile');
+    $scope.inmateList = {};
+
+    var dummy = {
+        'id': $scope.profile.id,
+    };
+    $ionicLoading.show();
+    admin.inmateDetails(dummy)
+        .success(function(data) {
+            console.log(data);
+            if (data.status == 1) {
+                $scope.inmateList = data.message;
+            } else {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: data.message
+                });
+            }
+        }).error(function() {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Error',
+                template: 'Connection Error'
+            });
+        }).then(function() {
+            $ionicLoading.hide();
+        });
+    ionic.material.ink.displayEffect();
 });

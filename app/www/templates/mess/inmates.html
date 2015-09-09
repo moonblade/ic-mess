@@ -1,13 +1,10 @@
-<ion-view view-title="Attendance">
+<ion-view view-title="Inmates">
     <ion-content ng-class="{expanded:isExpanded}">
         <div class="list padding">
             <a ng-repeat="stringDate in attendance" class="">
-                <div class="card item">
+                <div class="item card">
                     <div ng-show="stringDate.present==1">
                         <button ng-disabled="stringDate.editable==0" ng-click="setAbsent(stringDate.date)" class="item button icon-right ion-checkmark-round button-balanced">{{stringDate.dateString}}</button>
-                    </div>
-                    <div ng-show="stringDate.present==0">
-                        <button ng-disabled="stringDate.editable==0" ng-click="setPresent(stringDate.date)" class="item button icon-right ion-close-round button-assertive">{{stringDate.dateString}}</button>
                     </div>
                 </div>
             </a>

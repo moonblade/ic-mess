@@ -20,8 +20,8 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
 })
 
 .value('appConfig', {
-    serverUrl: 'http://localhost/working/mess/api/',
-    // serverUrl: 'http://icccmess-moonblade.rhcloud.com/api/',
+    // serverUrl: 'http://localhost/working/mess/api/',
+    serverUrl: 'http://icccmess-moonblade.rhcloud.com/api/',
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
@@ -116,6 +116,20 @@ angular.module('Mess', ['ionic', 'Mess.controllers', 'Mess.factories'])
             'menuContent': {
                 templateUrl: 'templates/feedback/feedback.html',
                 controller: 'FeedbackCtrl'
+            },
+            'fabContent': {
+                template: '',
+                controller: ''
+            }
+        }
+    })
+
+    .state('app.inmates', {
+        url: '/inmates',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/mess/inmates.html',
+                controller: 'InmateCtrl'
             },
             'fabContent': {
                 template: '',

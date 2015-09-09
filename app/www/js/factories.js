@@ -125,6 +125,9 @@ angular.module('Mess.factories', [])
         removeMessLeave: function(data) {
             return generic.generic(admin + 'removeMessLeave/', data);
         },
+        inmateDetails: function(data) {
+            return generic.generic(admin + 'inmateDetails/', data);
+        },
         
 
 

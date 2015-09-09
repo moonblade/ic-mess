@@ -1316,6 +1316,7 @@ angular.module('Mess.controllers', ['Mess.factories', 'ngCordova'])
     $scope.$parent.setHeaderFab(false);
     $scope.profile = $localstorage.getObject('profile');
     $scope.inmateList = {};
+    $scope.searchText = "";
 
     var dummy = {
         'id': $scope.profile.id,

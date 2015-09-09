@@ -654,6 +654,7 @@ class Admin extends CI_Controller {
 		$result['message']="Permission Denied";
 		$postdata = file_get_contents("php://input");
 	    $request = json_decode($postdata, true);
+	    $showOthers=false;
 		$user = new User();
 		$id=$request['id'];
 		if($user->isMD($id))
@@ -671,7 +672,7 @@ class Admin extends CI_Controller {
 					if($inmate->status==1)
 					{
 						$attendance = new Attendance($inmate->id,1);
-						$inmate->nodPresent=$attendance->nodPresent($inmate->id);
+						$inmate->nodPresent=$attendance->nodPresent($inmate->id,$currentMess['mid']);
 					}
 				}
 				$result['status']=1;

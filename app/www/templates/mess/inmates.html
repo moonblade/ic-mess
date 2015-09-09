@@ -1,13 +1,23 @@
 <ion-view view-title="Inmates">
     <ion-content ng-class="{expanded:isExpanded}">
         <div class="list padding">
-            <a ng-repeat="stringDate in attendance" class="">
-                <div class="item card">
-                    <div ng-show="stringDate.present==1">
-                        <button ng-disabled="stringDate.editable==0" ng-click="setAbsent(stringDate.date)" class="item button icon-right ion-checkmark-round button-balanced">{{stringDate.dateString}}</button>
+            <ion-toggle ng-model="showOthers" toggle-class="item toggle-calm">Show Complete</ion-toggle>
+            <label class="item item-input item-icon-right">
+                <input type="text" ng-model="searchText" placeholder="Filter">
+                <i class="icon ion-android-search"></i>
+            </label>
+            <div>
+                <a ng-repeat="person in inmateList | filter:searchText" ng-show="person.status==1 || showOthers" class="item item-icon-right item-icon-left ">
+                    <!-- icon -->
+                    <div class="icon">
+                        <i ng-show="person.status==0" class="icon ion-clock">  </i> 
+                        <i ng-show="person.status==1" class="icon ion-checkmark-round">  </i> 
+                        <i ng-show="person.status==2" class="icon ion-close-round">  </i> 
                     </div>
-                </div>
-            </a>
+                    {{person.name}} ({{person.branch}})
+                    <span class="badge badge-assertive">{{person.amount}}</span>
+                </a>
+            </div>
         </div>
     </ion-content>
 </ion-view>

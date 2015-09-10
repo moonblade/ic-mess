@@ -656,27 +656,24 @@ class Admin extends CI_Controller {
 	    $request = json_decode($postdata, true);
 		$user = new User();
 		$id=$request['id'];
-		if($user->isMD($id))
+		$mess = new Mess();
+		$result['message']="Database Error";
+		$currentMess=$mess->getMessDetails();
+		$array['mid']=$currentMess['mid'];
+		$query=$this->db->query('select id,name,branch,amount,bill,status from inmate natural join users where mid='.$currentMess['mid'].' order by name');
+		$temp=$query->result();
+		if($temp)
 		{
-			$mess = new Mess();
-			$result['message']="Database Error";
-			$currentMess=$mess->getMessDetails();
-			$array['mid']=$currentMess['mid'];
-			$query=$this->db->query('select id,name,branch,amount,bill,status from inmate natural join users where mid='.$currentMess['mid'].' order by name');
-			$temp=$query->result();
-			if($temp)
+			foreach ($temp as $inmate) 
 			{
-				foreach ($temp as $inmate) 
+				if($inmate->status==1)
 				{
-					if($inmate->status==1)
-					{
-						$attendance = new Attendance($inmate->id,1);
-						$inmate->nodPresent=$attendance->nodPresent($inmate->id,$currentMess['mid']);
-					}
+					$attendance = new Attendance($inmate->id,1);
+					$inmate->nodPresent=$attendance->nodPresent($inmate->id,$currentMess['mid']);
 				}
-				$result['status']=1;
-				$result['message']=$temp;
 			}
+			$result['status']=1;
+			$result['message']=$temp;
 		}
 		print json_encode($result);
 	}
@@ -689,28 +686,25 @@ class Admin extends CI_Controller {
 	    $request = json_decode($postdata, true);
 		$user = new User();
 		$id=$request['id'];
-		if($user->isMD($id))
+		$result['message']="Database Error";
+		$array['amount']=$request['amount'];
+		$array['bill']=$request['bill'];
+		$query=$this->db->get_where('inmate',array('id'=>$changeId));
+		$currentCost=0;
+		$person=$query->row_array();
+		if($person)
 		{
-			$result['message']="Database Error";
-			$array['amount']=$request['amount'];
-			$array['bill']=$request['bill'];
-			$query=$this->db->get_where('inmate',array('id'=>$changeId));
-			$currentCost=0;
-			$person=$query->row_array();
-			if($person)
-			{
-				$currentCost=$person['amount'];
-			}
-			if($option==0)
-				$array['amount']+=$currentCost;
+			$currentCost=$person['amount'];
+		}
+		if($option==0)
+			$array['amount']+=$currentCost;
 
-			$this->db->where('id',$changeId);
-			$this->db->update('inmate',$array);
-			if($this->db->affected_rows())
-			{
-				$result['status']=1;
-				$result['message']="Successfully Altered";
-			}
+		$this->db->where('id',$changeId);
+		$this->db->update('inmate',$array);
+		if($this->db->affected_rows())
+		{
+			$result['status']=1;
+			$result['message']="Successfully Altered";
 		}
 		print json_encode($result);
 	}
